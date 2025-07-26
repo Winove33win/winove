@@ -2,34 +2,59 @@ import express from 'express';
 import Stripe from 'stripe';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import { db } from './db.js';
+import { salvarPagamento } from './db.js';
 
 dotenv.config();
 const app = express();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-app.use(bodyParser.json());
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-app.post('/webhook', async (req, res) => {
-  const event = req.body;
+app.use(bodyParser.json());
+app.use('/webhook', express.raw({ type: 'application/json' }));
+
+app.post('/create-checkout-session', async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'brl',
+            product_data: { name: 'Produto Winove' },
+            unit_amount: 12000,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      success_url: 'https://winove.com.br/sucesso',
+      cancel_url: 'https://winove.com.br/cancelado',
+    });
+
+    res.json({ id: session.id });
+  } catch (err) {
+    console.error('Erro ao criar checkout:', err);
+    res.status(500).json({ error: 'Erro ao criar sessão de pagamento.' });
+  }
+});
+
+app.post('/webhook', (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.error('Erro webhook:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    const customerEmail = session.customer_details.email;
-    const amount = session.amount_total / 100;
-
-    try {
-      await db.query(
-        'INSERT INTO pagamentos (email, valor, status, stripe_id) VALUES (?, ?, ?, ?)',
-        [customerEmail, amount, 'sucesso', session.id]
-      );
-      res.status(200).send('Pagamento salvo com sucesso');
-    } catch (error) {
-      console.error('Erro ao salvar pagamento:', error);
-      res.status(500).send('Erro interno');
-    }
-  } else {
-    res.status(200).send('Evento ignorado');
+    salvarPagamento(session);
   }
+
+  res.json({ received: true });
 });
 
 app.listen(4242, () => {

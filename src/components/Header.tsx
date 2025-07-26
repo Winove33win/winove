@@ -21,8 +21,12 @@ export const Header = () => {
 
   return (
     <header className="fixed top-0 w-full z-50 glass border-b border-border/20">
+      <div className="bg-primary text-primary-foreground text-sm flex items-center justify-center py-1">
+        <span>Veja as promoções atuais</span>
+        <Button className="btn-secondary ml-4 px-3 py-1 text-xs">Ver mais</Button>
+      </div>
       <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-primary hover:text-primary/80 transition-colors duration-300">
             Winove
