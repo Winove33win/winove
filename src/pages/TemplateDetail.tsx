@@ -47,10 +47,29 @@ const TemplateDetail = () => {
     );
   }
 
-  const handlePurchase = () => {
-    // Redirect directly to the Stripe checkout page
-    window.location.href =
-      "https://buy.stripe.com/test_1234567890abcdef";
+  const handlePurchase = async () => {
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id: template.slug
+        })
+      });
+
+      const data = await res.json();
+
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        toast({ title: "Erro", description: "Erro ao criar sessão de pagamento." });
+      }
+    } catch (err) {
+      console.error("Erro ao redirecionar:", err);
+      toast({ title: "Erro", description: "Não foi possível redirecionar." });
+    }
   };
 
   return (
