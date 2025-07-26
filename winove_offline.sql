@@ -133,14 +133,4 @@ INSERT INTO testimonials (id,name,role,company,content,rating,image) VALUES (2,'
 INSERT INTO testimonials (id,name,role,company,content,rating,image) VALUES (3,'Roberto Costa','Fundador','EcoHealth','A estratégia de SEO implementada pela Winove nos posicionou na primeira página do Google para todas as palavras-chave relevantes. O ROI foi impressionante: cada real investido retornou 12 em vendas.',5,'photo-1507003211169-0a1dd7228f2d');
 INSERT INTO testimonials (id,name,role,company,content,rating,image) VALUES (4,'Marina Santos','Proprietária','Boutique Luna','O e-commerce desenvolvido pela Winove superou todas as expectativas. A plataforma é rápida, intuitiva e as vendas online aumentaram 350% no primeiro trimestre. Recomendo sem hesitação!',5,'photo-1438761681033-6461ffad8d80');
 
--- Store template purchases made via Stripe
-CREATE TABLE IF NOT EXISTS template_orders (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  template_id INT,
-  template_name VARCHAR(255),
-  amount INT,
-  currency VARCHAR(10),
-  stripe_session_id VARCHAR(255),
-  status VARCHAR(50),
-  created_at DATETIME
-);
+
