@@ -47,31 +47,10 @@ const TemplateDetail = () => {
     );
   }
 
-  const handlePurchase = async () => {
-    try {
-      const res = await fetch("/create-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          templateId: template.slug,
-          templateName: template.title,
-          amount: Math.round(template.price * 100),
-        }),
-      });
-
-      if (!res.ok) throw new Error("Falha ao criar sessão de pagamento");
-
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Erro ao processar pagamento",
-        description: "Não foi possível iniciar o pagamento. Tente novamente.",
-      });
-    }
+  const handlePurchase = () => {
+    // Redirect directly to the Stripe checkout page
+    window.location.href =
+      "https://buy.stripe.com/test_1234567890abcdef";
   };
 
   return (
