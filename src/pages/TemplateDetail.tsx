@@ -49,7 +49,8 @@ const TemplateDetail = () => {
 
   const handlePurchase = async () => {
     try {
-      const res = await fetch("/api/checkout", {
+      const baseUrl = import.meta.env.VITE_API_URL || "";
+      const res = await fetch(`${baseUrl}/api/checkout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
