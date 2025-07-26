@@ -34,7 +34,6 @@ router.post('/checkout', async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      mode: 'payment',
       line_items: [
         {
           price_data: {
@@ -45,11 +44,12 @@ router.post('/checkout', async (req, res) => {
           quantity: 1,
         },
       ],
-      success_url: 'https://winove.site/sucesso',
-      cancel_url: 'https://winove.site/cancelado',
+      mode: 'payment',
+      success_url: 'https://winove.vercel.app/sucesso',
+      cancel_url: 'https://winove.vercel.app/cancelado',
     });
 
-    res.json({ url: session.url });
+    res.json({ sessionId: session.id });
   } catch (err) {
     console.error('[checkout] stripe error:', err);
     res.status(500).json({ error: 'Erro ao criar sessão de pagamento.' });
