@@ -81,3 +81,4 @@ mysql -u fernandowinove -p Winove-new < winove_offline.sql
 ```
 
 You can also use phpMyAdmin or another GUI to import the file manually.
+
