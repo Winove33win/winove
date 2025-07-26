@@ -82,22 +82,3 @@ mysql -u fernandowinove -p Winove-new < winove_offline.sql
 
 You can also use phpMyAdmin or another GUI to import the file manually.
 
-## Local Stripe + MySQL server
-
-The repo includes a simple Express server (`server/app.js`) that connects to the
-offline MySQL database and Stripe. Copy `.env.example` to `.env` and adjust the
-credentials if needed:
-
-```sh
-cp .env.example .env
-```
-
-Install dependencies and start the server:
-
-```sh
-npm install
-npm run server
-```
-
-The `/create-payment` endpoint will create a Stripe checkout session and store
-the order in the `template_orders` table.
