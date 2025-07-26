@@ -13,6 +13,7 @@ export const Header = () => {
     { name: "Serviços", href: "/#services", type: "anchor" },
     { name: "Portfolio", href: "/#portfolio", type: "anchor" },
     { name: "Templates", href: "/templates", type: "link" },
+    { name: "E-mail Corporativo", href: "/email-corporativo", type: "link" },
     { name: "Blog", href: "/blog", type: "link" },
     { name: "Cases", href: "/cases", type: "link" },
     { name: "Contato", href: "/#contact", type: "anchor" },
