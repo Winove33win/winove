@@ -7,21 +7,19 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  ArrowLeft, 
-  Eye, 
-  CheckCircle, 
-  Star, 
-  Download, 
-  Shield, 
-  Smartphone, 
+import {
+  ArrowLeft,
+  Eye,
+  CheckCircle,
+  Star,
+  Download,
+  Shield,
+  Smartphone,
   Search,
   Users,
   Clock,
-  FileText
+  FileText,
 } from "lucide-react";
-
-// Note: Supabase client will be configured when user connects to Supabase
 
 const TemplateDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -50,11 +48,30 @@ const TemplateDetail = () => {
   }
 
   const handlePurchase = async () => {
-    // For demo purposes - this will be configured when Supabase is connected
-    toast({
-      title: "Integração com Stripe",
-      description: "A integração com Stripe será configurada quando você conectar o Supabase ao projeto.",
-    });
+    try {
+      const res = await fetch("/create-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          templateId: template.slug,
+          templateName: template.title,
+          amount: Math.round(template.price * 100),
+        }),
+      });
+
+      if (!res.ok) throw new Error("Falha ao criar sessão de pagamento");
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Erro ao processar pagamento",
+        description: "Não foi possível iniciar o pagamento. Tente novamente.",
+      });
+    }
   };
 
   return (
