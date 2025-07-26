@@ -60,6 +60,15 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Backend dependencies
+
+The local server relies on the following packages:
+
+- **express** – API server framework
+- **mysql2** – MySQL client with promise support
+- **stripe** – Stripe API client
+- **dotenv** – load environment variables from `.env`
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/47e97737-0d5b-4617-a6fc-0cc3a9fb4b6b) and click on Share -> Publish.

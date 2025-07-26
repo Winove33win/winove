@@ -1,7 +1,9 @@
-const express = require('express');
-const mysql = require('mysql2/promise');
-const Stripe = require('stripe');
-require('dotenv').config();
+import express from 'express';
+import mysql from 'mysql2/promise';
+import Stripe from 'stripe';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 app.use(express.json());
