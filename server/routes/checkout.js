@@ -1,14 +1,17 @@
 import Stripe from 'stripe';
 import express from 'express';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2023-10-16',
-});
+const stripeSecret = process.env.STRIPE_SECRET_KEY;
+if (!stripeSecret) {
+  console.error('STRIPE_SECRET_KEY not configured');
+}
+const stripe = new Stripe(stripeSecret || '', { apiVersion: '2023-10-16' });
 
 const router = express.Router();
 
 router.post('/checkout', async (req, res) => {
   const { id } = req.body;
+  console.log('[checkout] requested', id);
 
   const produtos = {
     template_restaurante: {
@@ -23,7 +26,10 @@ router.post('/checkout', async (req, res) => {
 
   const produto = produtos[id];
 
-  if (!produto) return res.status(400).json({ error: 'Produto inválido' });
+  if (!produto) {
+    console.warn('[checkout] produto invalido:', id);
+    return res.status(400).json({ error: 'Produto inválido' });
+  }
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -45,7 +51,7 @@ router.post('/checkout', async (req, res) => {
 
     res.json({ url: session.url });
   } catch (err) {
-    console.error(err);
+    console.error('[checkout] stripe error:', err);
     res.status(500).json({ error: 'Erro ao criar sessão de pagamento.' });
   }
 });
