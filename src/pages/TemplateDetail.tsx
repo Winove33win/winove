@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { loadStripe } from "@stripe/stripe-js";
 import {
   ArrowLeft,
   Eye,
@@ -49,21 +50,21 @@ const TemplateDetail = () => {
 
   const handlePurchase = async () => {
     try {
+      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
       const baseUrl = import.meta.env.VITE_API_URL || "";
-      const res = await fetch(`${baseUrl}/api/checkout`, {
+
+      const response = await fetch(`${baseUrl}/api/checkout`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          id: template.slug
-        })
+        body: JSON.stringify({ id: template.slug }),
       });
 
-      const data = await res.json();
+      const { sessionId } = await response.json();
 
-      if (data?.url) {
-        window.location.href = data.url;
+      if (sessionId && stripe) {
+        await stripe.redirectToCheckout({ sessionId });
       } else {
         toast({ title: "Erro", description: "Erro ao criar sessão de pagamento." });
       }
