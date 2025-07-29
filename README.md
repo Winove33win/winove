@@ -10,7 +10,7 @@ There are several ways of editing your application.
 
 **Use Winove**
 
-Simply visit the [Winove Project](https://lovable.dev/projects/47e97737-0d5b-4617-a6fc-0cc3a9fb4b6b) and start prompting.
+Simply visit the www.winove.com.br
 
 Changes made via Winove will be committed automatically to this repo.
 
