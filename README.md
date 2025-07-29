@@ -2,8 +2,7 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/47e97737-0d5b-4617-a6fc-0cc3a9fb4b6b
-
+**URL**: www.winove.com.br
 ## How can I edit this code?
 
 There are several ways of editing your application.
