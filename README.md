@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Welcome to your Winove project
 
 ## Project info
 
@@ -8,15 +8,15 @@
 
 There are several ways of editing your application.
 
-**Use Lovable**
+**Use Winove**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/47e97737-0d5b-4617-a6fc-0cc3a9fb4b6b) and start prompting.
+Simply visit the [Winove Project](https://lovable.dev/projects/47e97737-0d5b-4617-a6fc-0cc3a9fb4b6b) and start prompting.
 
-Changes made via Lovable will be committed automatically to this repo.
+Changes made via Winove will be committed automatically to this repo.
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Winove.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -71,9 +71,9 @@ The local server relies on the following packages:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/47e97737-0d5b-4617-a6fc-0cc3a9fb4b6b) and click on Share -> Publish.
+Simply open [Winove](https://lovable.dev/projects/47e97737-0d5b-4617-a6fc-0cc3a9fb4b6b) and click on Share -> Publish.
 
-## Can I connect a custom domain to my Lovable project?
+## Can I connect a custom domain to my Winove project?
 
 Yes, you can!
 
