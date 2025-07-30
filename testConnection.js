@@ -5,9 +5,9 @@ async function testConnection() {
     const connection = await mysql.createConnection({
       host: 'lweb03.appuni.com.br',
       port: 3306,
-      user: 'winove',
-      password: '9*19avmU0',
-      database: 'fernando_winove_com_br_'
+      user: 'Winove',
+      password: '9*19avmU0', // 
+      database: 'fernando_winove_com_br'
     });
 
     console.log('✅ Conectado com sucesso ao banco de dados!');
