@@ -7,7 +7,7 @@ async function testConnection() {
       port: 3306,
       user: 'Winove',
       password: '9*19avmU0', // 
-      database: 'fernando_winove_com_br'
+      database: 'fernando_winove_com_br_'
     });
 
     console.log('✅ Conectado com sucesso ao banco de dados!');
