@@ -20,10 +20,11 @@ jobs:
         run: npm run build
 
       - name: 🚀 Enviar via FTP para a Plesk
-        uses: SamKirkland/FTP-Deploy-Action@4.3.4
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: dist/
           server-dir: ${{ secrets.FTP_TARGET_DIR }}
+
