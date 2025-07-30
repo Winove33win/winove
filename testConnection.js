@@ -6,7 +6,7 @@ async function testConnection() {
       host: 'web03.appuni.com.br',
       port: 3306,
       user: 'Winove',
-      password: 'amilase1234', // substitua por variável de ambiente em produção
+      password: 'amilase1234', // 
       database: 'fernando_winove_com_br'
     });
 
