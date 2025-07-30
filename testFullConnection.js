@@ -9,8 +9,7 @@ const execAsync = util.promisify(exec);
 const HOST = process.env.DB_HOST || 'lweb03.appuni.com.br';
 const PORT = Number(process.env.DB_PORT) || 3306;
 const USER = process.env.DB_USER || 'Winove';
-// the default password includes a trailing @
-const PASSWORD = process.env.DB_PASSWORD || '9*19avmU0';
+const PASSWORD = process.env.DB_PASSWORD || 'amilase1234';
 const DATABASE = process.env.DB_NAME || 'fernando_winove_com_br_';
 
 async function diagnosticoRede() {
