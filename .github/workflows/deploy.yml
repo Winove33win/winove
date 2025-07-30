@@ -1,4 +1,4 @@
-name: 🚀 Deploy automático para Plesk via FTP
+name: build-and-deploy
 
 on:
   push:
@@ -10,21 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Clonar repositório
+      - name: Clonar repositório
         uses: actions/checkout@v3
 
-      - name: 📦 Instalar dependências
+      - name: Instalar dependências
         run: npm install
 
-      - name: 🏗️ Gerar build de produção
+      - name: Gerar build de produção
         run: npm run build
 
-      - name: 🚀 Enviar via FTP para a Plesk
+      - name: Enviar via FTP para a Plesk
         uses: SamKirkland/FTP-Deploy-Action@v4.3.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: dist/
+          local-dir: ./dist
           server-dir: ${{ secrets.FTP_TARGET_DIR }}
-
