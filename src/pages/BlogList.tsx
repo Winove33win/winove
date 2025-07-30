@@ -1,18 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, User, ArrowRight, Filter } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { blogPosts } from "@/data/blogPosts";
+
+interface BlogPost {
+  slug: string;
+  title: string;
+  category: string;
+  readingTime: string;
+  author: string;
+  date: string;
+  coverImage: string;
+  excerpt: string;
+  content: string;
+}
 
 export const BlogList = () => {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const categories = ["all", ...Array.from(new Set(blogPosts.map(post => post.category)))];
-  
-  const filteredPosts = selectedCategory === "all" 
-    ? blogPosts 
-    : blogPosts.filter(post => post.category === selectedCategory);
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const baseUrl = import.meta.env.VITE_API_URL || "";
+        const res = await fetch(`${baseUrl}/api/blog-posts`);
+        const data = await res.json();
+        setPosts(data);
+      } catch (err) {
+        console.error('fetch blog-posts', err);
+      }
+    };
+    load();
+  }, []);
+
+  const categories = ["all", ...Array.from(new Set(posts.map((post) => post.category)))];
+
+  const filteredPosts = selectedCategory === "all"
+    ? posts
+    : posts.filter((post) => post.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-background">

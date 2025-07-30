@@ -2,15 +2,47 @@ import { useParams, Link } from "react-router-dom";
 import { Calendar, User, ArrowLeft, Clock, Share2 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getBlogPost, getRelatedPosts } from "@/data/blogPosts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+interface BlogPost {
+  slug: string;
+  title: string;
+  category: string;
+  readingTime: string;
+  author: string;
+  date: string;
+  coverImage: string;
+  excerpt: string;
+  content: string;
+}
 
 export const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
-  const post = slug ? getBlogPost(slug) : undefined;
-  const relatedPosts = post ? getRelatedPosts(post.slug, post.category) : [];
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
 
   useEffect(() => {
+    const load = async () => {
+      if (!slug) return;
+      try {
+        const baseUrl = import.meta.env.VITE_API_URL || "";
+        const res = await fetch(`${baseUrl}/api/blog-posts/${slug}`);
+        if (res.ok) {
+          const data = await res.json();
+          setPost(data);
+          const relRes = await fetch(`${baseUrl}/api/blog-posts`);
+          if (relRes.ok) {
+            const all = await relRes.json();
+            setRelatedPosts(
+              all.filter((p: BlogPost) => p.slug !== data.slug && p.category === data.category).slice(0, 3)
+            );
+          }
+        }
+      } catch (err) {
+        console.error('fetch blog-post', err);
+      }
+    };
+    load();
     window.scrollTo(0, 0);
   }, [slug]);
 
