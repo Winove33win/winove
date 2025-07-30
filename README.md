@@ -90,3 +90,19 @@ mysql -u fernandowinove -p Winove-new < winove_offline.sql
 
 You can also use phpMyAdmin or another GUI to import the file manually.
 
+## Testing database connectivity
+
+Use the `testFullConnection.js` script to diagnose network issues and test the
+database connection. Run it with Node:
+
+```sh
+node testFullConnection.js
+```
+
+If your database requires whitelisting a fixed IP, you can discover the public
+IP address of this Codex environment with:
+
+```sh
+curl ifconfig.me
+```
+
