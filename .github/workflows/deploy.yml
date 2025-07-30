@@ -28,4 +28,3 @@ jobs:
           local-dir: dist/
           server-dir: ${{ secrets.FTP_TARGET_DIR }}
           
-Adicionar GitHub Action para deploy automático
