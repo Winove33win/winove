@@ -6,7 +6,7 @@ async function testConnection() {
       host: 'lweb03.appuni.com.br',
       port: 3306,
       user: 'Winove',
-      password: 'amilase1234', //
+      password: '9*19avmU0',
       database: 'fernando_winove_com_br_'
     });
 
