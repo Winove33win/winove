@@ -4,9 +4,9 @@ async function createTable() {
   const connection = await mysql.createConnection({
     host: 'lweb03.appuni.com.br',
     port: 3306,
-    user: 'Winove',
+    user: 'winove',
     password: '9*19avmU0',
-    database: 'fernando_winove_com_br'
+    database: 'fernando_winove_com_br_'
   });
 
   const sql = `
