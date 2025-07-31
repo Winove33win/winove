@@ -5,15 +5,19 @@ import { Footer } from "@/components/Footer";
 import { useEffect, useState } from "react";
 
 interface BlogPost {
+  id: number;
+  titulo: string;
   slug: string;
-  title: string;
-  category: string;
-  readingTime: string;
-  author: string;
-  date: string;
-  coverImage: string;
-  excerpt: string;
-  content: string;
+  resumo: string;
+  conteudo: string;
+  imagem_destacada: string;
+  data_publicacao: string;
+  autor: string;
+}
+
+function calcReadingTime(content: string): string {
+  const words = content.replace(/<[^>]+>/g, "").split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.ceil(words / 200))}`;
 }
 
 export const BlogPost = () => {
@@ -28,14 +32,12 @@ export const BlogPost = () => {
         const baseUrl = import.meta.env.VITE_API_URL || "";
         const res = await fetch(`${baseUrl}/api/blog-posts/${slug}`);
         if (res.ok) {
-          const data = await res.json();
+          const data: BlogPost = await res.json();
           setPost(data);
           const relRes = await fetch(`${baseUrl}/api/blog-posts`);
           if (relRes.ok) {
-            const all = await relRes.json();
-            setRelatedPosts(
-              all.filter((p: BlogPost) => p.slug !== data.slug && p.category === data.category).slice(0, 3)
-            );
+            const all: BlogPost[] = await relRes.json();
+            setRelatedPosts(all.filter((p) => p.slug !== data.slug).slice(0, 3));
           }
         }
       } catch (err) {
@@ -88,31 +90,24 @@ export const BlogPost = () => {
               Voltar ao Blog
             </Link>
 
-            {/* Category Badge */}
-            <div className="mb-6">
-              <span className="px-4 py-2 rounded-full bg-primary/20 glass text-primary border border-primary/30 text-sm font-medium">
-                {post.category}
-              </span>
-            </div>
-
             {/* Title */}
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-foreground leading-tight">
-              {post.title}
+              {post.titulo}
             </h1>
 
             {/* Meta Information */}
             <div className="flex flex-wrap items-center gap-6 text-muted-foreground mb-8">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                <span>{post.author}</span>
+                <span>{post.autor}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                <span>{new Date(post.date).toLocaleDateString('pt-BR')}</span>
+                <span>{new Date(post.data_publicacao).toLocaleDateString('pt-BR')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
-                <span>{post.readingTime} de leitura</span>
+                <span>{`${calcReadingTime(post.conteudo)} min`} de leitura</span>
               </div>
             </div>
 
@@ -133,8 +128,8 @@ export const BlogPost = () => {
           <div className="max-w-4xl mx-auto">
             <div className="relative h-64 md:h-96 overflow-hidden rounded-2xl">
               <img
-                src={`https://images.unsplash.com/${post.coverImage}?w=1200&h=600&fit=crop`}
-                alt={post.title}
+                src={post.imagem_destacada}
+                alt={post.titulo}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent" />
@@ -150,7 +145,7 @@ export const BlogPost = () => {
             <div className="glass rounded-2xl p-8 md:p-12">
               <div 
                 className="prose prose-lg max-w-none text-foreground prose-headings:text-foreground prose-strong:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-ul:text-muted-foreground prose-ol:text-muted-foreground prose-li:text-muted-foreground"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{ __html: post.conteudo }}
               />
             </div>
           </div>
@@ -173,21 +168,21 @@ export const BlogPost = () => {
                   <article key={relatedPost.slug} className="glass rounded-2xl overflow-hidden hover-lift group">
                     <div className="relative h-48 overflow-hidden">
                       <img
-                        src={`https://images.unsplash.com/${relatedPost.coverImage}?w=400&h=300&fit=crop`}
-                        alt={relatedPost.title}
+                        src={relatedPost.imagem_destacada}
+                        alt={relatedPost.titulo}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
                     </div>
-                    
+
                     <div className="p-6">
                       <h3 className="text-lg font-bold mb-2 text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300">
-                        {relatedPost.title}
+                        {relatedPost.titulo}
                       </h3>
                       <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                        {relatedPost.excerpt}
+                        {relatedPost.resumo}
                       </p>
-                      <Link 
+                      <Link
                         to={`/blog/${relatedPost.slug}`}
                         className="text-primary hover:text-primary/80 transition-colors duration-300 text-sm font-medium"
                       >
