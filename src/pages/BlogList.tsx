@@ -21,13 +21,14 @@ function calcReadingTime(content: string): string {
 }
 
 export const BlogList = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [posts, setPosts] = useState<BlogPost[] | null>(null);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const API = import.meta.env.VITE_API_URL || "/api";
-        const res = await fetch(`${API}/blog-posts`);
+        const res = await fetch(
+          "https://winove.com.br/api/blog-posts.php"
+        );
         if (res.ok) {
           const data: BlogPost[] = await res.json();
           setPosts(data.slice(0, 6));
@@ -38,6 +39,10 @@ export const BlogList = () => {
     };
     load();
   }, []);
+
+  if (!posts) {
+    return <p>Carregando...</p>;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -71,9 +76,12 @@ export const BlogList = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.map((post, index) => (
-                <article
-                  key={post.slug}
+              {posts.length === 0 ? (
+                <p>Nenhum post disponível no momento</p>
+              ) : (
+                posts.map((post, index) => (
+                  <article
+                    key={post.slug}
                   className="glass rounded-2xl overflow-hidden hover-lift group animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
@@ -126,18 +134,9 @@ export const BlogList = () => {
                     </Link>
                   </div>
                 </article>
-              ))}
+                ))
+              )}
             </div>
-
-            {posts.length === 0 && (
-              <div className="text-center py-16">
-                <div className="glass rounded-2xl p-8 max-w-md mx-auto">
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
-                    Nenhum post disponível no momento
-                  </h3>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </section>
