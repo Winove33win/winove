@@ -27,8 +27,12 @@ export const CasesList = () => {
       try {
         const API = import.meta.env.VITE_API_URL || "/api";
         const res = await fetch(`${API}/cases`);
-        const data = await res.json();
-        setItems(data);
+        if (res.ok) {
+          const text = await res.text();
+          if (!text) throw new Error("Resposta vazia do servidor");
+          const data = JSON.parse(text);
+          setItems(data);
+        }
       } catch (err) {
         console.error('fetch cases', err);
       }

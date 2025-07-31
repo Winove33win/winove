@@ -61,7 +61,9 @@ const TemplateDetail = () => {
         body: JSON.stringify({ id: template.slug }),
       });
 
-      const { sessionId } = await response.json();
+      const text = await response.text();
+      if (!text) throw new Error("Resposta vazia do servidor");
+      const { sessionId } = JSON.parse(text);
 
       if (sessionId && stripe) {
         await stripe.redirectToCheckout({ sessionId });

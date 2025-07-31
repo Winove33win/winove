@@ -31,11 +31,15 @@ export const CaseDetail = () => {
         const API = import.meta.env.VITE_API_URL || "/api";
         const res = await fetch(`${API}/cases/${slug}`);
         if (res.ok) {
-          const data = await res.json();
+          const text = await res.text();
+          if (!text) throw new Error("Resposta vazia do servidor");
+          const data = JSON.parse(text);
           setCaseItem(data);
           const relRes = await fetch(`${API}/cases`);
           if (relRes.ok) {
-            const all = await relRes.json();
+            const relText = await relRes.text();
+            if (!relText) throw new Error("Resposta vazia do servidor");
+            const all = JSON.parse(relText);
             setRelatedCases(all.filter((c: CaseItem) => c.slug !== data.slug).slice(0, 3));
           }
         }

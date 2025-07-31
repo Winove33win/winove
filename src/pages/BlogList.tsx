@@ -30,7 +30,11 @@ export const BlogList = () => {
           "https://winove.com.br/api/blog-posts.php"
         );
         if (res.ok) {
-          const data: BlogPost[] = await res.json();
+          const text = await res.text();
+          if (!text) {
+            throw new Error("Resposta vazia do servidor");
+          }
+          const data: BlogPost[] = JSON.parse(text);
           setPosts(data.slice(0, 6));
         }
       } catch (err) {
