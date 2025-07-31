@@ -26,7 +26,7 @@ export const CasesList = () => {
     const load = async () => {
       try {
         const baseUrl = import.meta.env.VITE_API_URL || "";
-        const res = await fetch(`${baseUrl}/api/cases`);
+        const res = await fetch(`${baseUrl}/cases`);
         const data = await res.json();
         setItems(data);
       } catch (err) {
