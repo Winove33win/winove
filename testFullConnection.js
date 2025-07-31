@@ -8,9 +8,9 @@ const execAsync = util.promisify(exec);
 // 🔧 Configurações do banco - podem ser sobrescritas por variáveis de ambiente
 const HOST = process.env.DB_HOST || 'lweb03.appuni.com.br';
 const PORT = Number(process.env.DB_PORT) || 3306;
-const USER = process.env.DB_USER || 'winove';
+const USER = process.env.DB_USER || 'Winove';
 const PASSWORD = process.env.DB_PASSWORD || '9*19avmU0';
-const DATABASE = process.env.DB_NAME || 'fernando_winove_com_br_';
+const DATABASE = process.env.DB_NAME || 'fernando_winove_com_br';
 
 async function diagnosticoRede() {
   console.log('\n🔎 Iniciando diagnóstico de rede...\n');
