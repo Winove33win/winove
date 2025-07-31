@@ -24,8 +24,8 @@ export const Blog = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const baseUrl = import.meta.env.VITE_API_URL || "/api";
-        const res = await fetch(`${baseUrl}/blog-posts`);
+        const API = import.meta.env.VITE_API_URL || "/api";
+        const res = await fetch(`${API}/blog-posts`);
         if (res.ok) {
           const data: Post[] = await res.json();
           setArticles(data.slice(0, 6));

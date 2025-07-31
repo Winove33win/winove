@@ -29,12 +29,12 @@ export const BlogPost = () => {
     const load = async () => {
       if (!slug) return;
       try {
-        const baseUrl = import.meta.env.VITE_API_URL || "/api";
-        const res = await fetch(`${baseUrl}/blog-posts/${slug}`);
+        const API = import.meta.env.VITE_API_URL || "/api";
+        const res = await fetch(`${API}/blog-posts/${slug}`);
         if (res.ok) {
           const data: BlogPost = await res.json();
           setPost(data);
-          const relRes = await fetch(`${baseUrl}/blog-posts`);
+          const relRes = await fetch(`${API}/blog-posts`);
           if (relRes.ok) {
             const all: BlogPost[] = await relRes.json();
             setRelatedPosts(all.filter((p) => p.slug !== data.slug).slice(0, 3));
