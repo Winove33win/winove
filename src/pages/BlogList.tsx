@@ -1,32 +1,38 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, User, ArrowRight, Filter } from "lucide-react";
+import { Calendar, User, ArrowRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
 interface BlogPost {
+  id: number;
+  titulo: string;
   slug: string;
-  title: string;
-  category: string;
-  readingTime: string;
-  author: string;
-  date: string;
-  coverImage: string;
-  excerpt: string;
-  content: string;
+  resumo: string;
+  conteudo: string;
+  imagem_destacada: string;
+  data_publicacao: string;
+  autor: string;
+}
+
+function calcReadingTime(content: string): string {
+  const words = content.replace(/<[^>]+>/g, "").split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.ceil(words / 200))}`;
 }
 
 export const BlogList = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [posts, setPosts] = useState<BlogPost[] | null>(null);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const baseUrl = import.meta.env.VITE_API_URL || "";
-        const res = await fetch(`${baseUrl}/api/blog-posts`);
-        const data = await res.json();
-        setPosts(data);
+        const res = await fetch(
+          "https://winove.com.br/api/blog-posts.php"
+        );
+        if (res.ok) {
+          const data: BlogPost[] = await res.json();
+          setPosts(data.slice(0, 6));
+        }
       } catch (err) {
         console.error('fetch blog-posts', err);
       }
@@ -34,11 +40,9 @@ export const BlogList = () => {
     load();
   }, []);
 
-  const categories = ["all", ...Array.from(new Set(posts.map((post) => post.category)))];
-
-  const filteredPosts = selectedCategory === "all"
-    ? posts
-    : posts.filter((post) => post.category === selectedCategory);
+  if (!posts) {
+    return <p>Carregando...</p>;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -65,60 +69,35 @@ export const BlogList = () => {
         </div>
       </section>
 
-      {/* Filter Section */}
-      <section className="py-12 bg-gradient-navy">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                    selectedCategory === category
-                      ? 'bg-gradient-primary text-primary-foreground glow-primary'
-                      : 'glass text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {category === "all" ? "Todos" : category}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+
 
       {/* Blog Posts Grid */}
       <section className="py-16 bg-gradient-navy">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPosts.map((post, index) => (
-                <article
-                  key={post.slug}
+              {posts.length === 0 ? (
+                <p>Nenhum post disponível no momento</p>
+              ) : (
+                posts.map((post, index) => (
+                  <article
+                    key={post.slug}
                   className="glass rounded-2xl overflow-hidden hover-lift group animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   {/* Post Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={`https://images.unsplash.com/${post.coverImage}?w=600&h=400&fit=crop`}
-                      alt={post.title}
+                      src={post.imagem_destacada}
+                      alt={post.titulo}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-                    
-                    {/* Category Badge */}
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-primary/20 glass text-primary border border-primary/30">
-                        {post.category}
-                      </span>
-                    </div>
 
                     {/* Read Time */}
                     <div className="absolute top-4 right-4">
                       <span className="px-3 py-1 text-xs font-medium rounded-full glass text-muted-foreground border border-border/20">
-                        {post.readingTime}
+                        {`${calcReadingTime(post.conteudo)} min`}
                       </span>
                     </div>
                   </div>
@@ -126,22 +105,22 @@ export const BlogList = () => {
                   {/* Post Content */}
                   <div className="p-6">
                     <h3 className="text-xl font-bold mb-3 text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300">
-                      {post.title}
+                      {post.titulo}
                     </h3>
-                    
+
                     <p className="text-muted-foreground mb-4 text-sm line-clamp-3">
-                      {post.excerpt}
+                      {post.resumo}
                     </p>
 
                     {/* Post Meta */}
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4" />
-                        <span>{post.author}</span>
+                        <span>{post.autor}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
-                        <span>{new Date(post.date).toLocaleDateString('pt-BR')}</span>
+                        <span>{new Date(post.data_publicacao).toLocaleDateString('pt-BR')}</span>
                       </div>
                     </div>
 
@@ -155,22 +134,9 @@ export const BlogList = () => {
                     </Link>
                   </div>
                 </article>
-              ))}
+                ))
+              )}
             </div>
-
-            {filteredPosts.length === 0 && (
-              <div className="text-center py-16">
-                <div className="glass rounded-2xl p-8 max-w-md mx-auto">
-                  <Filter className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
-                    Nenhum post encontrado
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Não há posts nesta categoria. Tente selecionar outra categoria.
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </section>
