@@ -29,7 +29,7 @@ export const BlogPost = () => {
     const load = async () => {
       if (!slug) return;
       try {
-        const baseUrl = import.meta.env.VITE_API_URL || "";
+        const baseUrl = import.meta.env.VITE_API_URL || "/api";
         const res = await fetch(`${baseUrl}/blog-posts/${slug}`);
         if (res.ok) {
           const data: BlogPost = await res.json();
