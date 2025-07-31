@@ -106,3 +106,31 @@ IP address of this Codex environment with:
 curl ifconfig.me
 ```
 
+---
+
+## 📦 Scripts de Banco de Dados (Winove)
+
+Este projeto inclui scripts utilitários para interagir com o banco de dados MySQL.
+
+### ▶️ Scripts incluídos
+
+| Arquivo                      | Função                                               |
+|-----------------------------|-------------------------------------------------------|
+| `testConnection.js`         | Testa a conexão com o banco                          |
+| `createTable.js`            | Cria a tabela `pagamentos`                           |
+| `insertData.js`             | Insere dados fictícios                               |
+| `selectData.js`             | Busca dados da tabela                                |
+| `grant-access.sql`          | Libera acesso externo ao banco para um IP remoto     |
+| `conectar-banco-winove.bat` | Executa o teste de conexão com um clique (Windows)   |
+
+### 🛠️ Instruções
+
+1. Execute os scripts com Node.js:
+
+```bash
+node createTable.js
+node insertData.js
+node selectData.js
+
+GRANT ALL PRIVILEGES ON fernando_winove_com_br.* TO 'Winove'@'%' IDENTIFIED BY '9*19avmU0';
+FLUSH PRIVILEGES;
