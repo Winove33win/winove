@@ -5,3 +5,7 @@ RewriteBase /blog/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [L,QSA]
+RewriteEngine On
+
+# Rota do blog
+RewriteRule ^blog/([a-zA-Z0-9-]+)$ blog/slug.php?slug=$1 [L,QSA]

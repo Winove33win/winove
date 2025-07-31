@@ -1,54 +1,36 @@
-<?php
-$slug = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    fetch("/api/blog-posts.php")
+      .then(res => res.json())
+      .then(posts => {
+        const container = document.getElementById("blogContainer");
 
-if (!$slug || $slug === 'index.php') {
-  echo "❌ Slug não informado.";
-  exit;
-}
+        if (!posts.length) {
+          container.innerHTML = "<p>Nenhum post disponível no momento.</p>";
+          return;
+        }
 
-$apiUrl = "https://winove.com.br/api/blog-posts.php";
-$json = file_get_contents($apiUrl);
-$posts = json_decode($json, true);
+        container.innerHTML = ""; // limpa
 
-$postSelecionado = null;
-foreach ($posts as $post) {
-  if ($post['slug'] === $slug) {
-    $postSelecionado = $post;
-    break;
-  }
-}
+        posts.forEach(post => {
+          const div = document.createElement("div");
+          div.classList.add("post");
 
-if (!$postSelecionado) {
-  http_response_code(404);
-  echo "<h1>404 - Post não encontrado</h1>";
-  exit;
-}
-?>
+          div.innerHTML = `
+            <div class="post-card">
+              <img src="${post.imagem}" alt="${post.titulo}" class="post-thumb" />
+              <h3>${post.titulo}</h3>
+              <p>${post.resumo}</p>
+              <a href="/blog/${post.slug}" class="post-link">Leia mais</a>
+              <p class="post-meta">${post.criado_em} • ${post.autor || "Winove"}</p>
+            </div>
+          `;
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title><?= $postSelecionado['titulo'] ?></title>
-  <meta name="description" content="<?= $postSelecionado['resumo'] ?>">
-  <style>
-    body { font-family: Arial; max-width: 800px; margin: auto; padding: 20px; line-height: 1.6; }
-    img { max-width: 100%; margin: 20px 0; }
-    .meta { font-size: 0.9em; color: #777; margin-bottom: 10px; }
-  </style>
-</head>
-<body>
-  <h1><?= $postSelecionado['titulo'] ?></h1>
-  <div class="meta">
-    Publicado em <?= date('d/m/Y', strtotime($postSelecionado['data_publicacao'])) ?> por <?= $postSelecionado['autor'] ?>
-  </div>
-
-  <?php if (!empty($postSelecionado['imagem_destacada'])): ?>
-    <img src="<?= $postSelecionado['imagem_destacada'] ?>" alt="Imagem destacada">
-  <?php endif; ?>
-
-  <div class="conteudo">
-    <?= $postSelecionado['conteudo'] ?>
-  </div>
-</body>
-</html>
+          container.appendChild(div);
+        });
+      })
+      .catch(err => {
+        console.error("Erro ao carregar posts:", err);
+      });
+  });
+</script>
