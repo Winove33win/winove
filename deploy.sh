@@ -2,6 +2,7 @@
 set -e
 
 # Build the project with hashed assets
+echo "VITE_API_URL=https://winove.com.br/api" > .env
 npm run build
 
 if [ -z "$DEPLOY_USER" ] || [ -z "$DEPLOY_HOST" ] || [ -z "$DEPLOY_PATH" ]; then
