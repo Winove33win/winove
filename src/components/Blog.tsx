@@ -19,13 +19,14 @@ function readingTime(content: string): string {
 }
 
 export const Blog = () => {
-  const [articles, setArticles] = useState<Post[]>([]);
+  const [articles, setArticles] = useState<Post[] | null>(null);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const API = import.meta.env.VITE_API_URL || "/api";
-        const res = await fetch(`${API}/blog-posts`);
+        const res = await fetch(
+          "https://winove.com.br/api/blog-posts.php"
+        );
         if (res.ok) {
           const data: Post[] = await res.json();
           setArticles(data.slice(0, 6));
@@ -36,6 +37,10 @@ export const Blog = () => {
     };
     load();
   }, []);
+
+  if (!articles) {
+    return <p>Carregando...</p>;
+  }
 
   return (
     <section id="blog" className="py-24 bg-gradient-navy relative overflow-hidden">
@@ -61,12 +66,15 @@ export const Blog = () => {
 
           {/* Articles Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article, index) => (
-              <Link
-                key={article.slug}
-                to={`/blog/${article.slug}`}
-                className="block"
-              >
+            {articles.length === 0 ? (
+              <p>Nenhum post disponível no momento</p>
+            ) : (
+              articles.map((article, index) => (
+                <Link
+                  key={article.slug}
+                  to={`/blog/${article.slug}`}
+                  className="block"
+                >
                 <article
                   className="glass rounded-2xl overflow-hidden hover-lift group animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
@@ -118,7 +126,8 @@ export const Blog = () => {
                   </div>
                 </article>
               </Link>
-            ))}
+              ))
+            )}
           </div>
 
           {/* View All Button */}
