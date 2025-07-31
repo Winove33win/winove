@@ -51,7 +51,7 @@ const TemplateDetail = () => {
   const handlePurchase = async () => {
     try {
       const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-      const baseUrl = import.meta.env.VITE_API_URL || "";
+      const baseUrl = import.meta.env.VITE_API_URL || "/api";
 
       const response = await fetch(`${baseUrl}/checkout`, {
         method: "POST",
