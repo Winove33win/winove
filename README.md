@@ -80,15 +80,6 @@ To connect a domain, navigate to Project > Settings > Domains and click Connect 
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
 
-## Offline database setup
-
-An SQL dump file named `winove_offline.sql` is included in the repository. It creates the `Winove-new` database with sample tables and data used by the project. To import the dump on your server, execute:
-
-```sh
-mysql -u fernandowinove -p Winove-new < winove_offline.sql
-```
-
-You can also use phpMyAdmin or another GUI to import the file manually.
 
 ## Testing database connectivity
 
