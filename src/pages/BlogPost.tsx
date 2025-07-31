@@ -30,11 +30,11 @@ export const BlogPost = () => {
       if (!slug) return;
       try {
         const baseUrl = import.meta.env.VITE_API_URL || "";
-        const res = await fetch(`${baseUrl}/api/blog-posts/${slug}`);
+        const res = await fetch(`${baseUrl}/blog-posts/${slug}`);
         if (res.ok) {
           const data: BlogPost = await res.json();
           setPost(data);
-          const relRes = await fetch(`${baseUrl}/api/blog-posts`);
+          const relRes = await fetch(`${baseUrl}/blog-posts`);
           if (relRes.ok) {
             const all: BlogPost[] = await relRes.json();
             setRelatedPosts(all.filter((p) => p.slug !== data.slug).slice(0, 3));

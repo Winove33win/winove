@@ -27,7 +27,7 @@ export const BlogList = () => {
     const load = async () => {
       try {
         const baseUrl = import.meta.env.VITE_API_URL || "";
-        const res = await fetch(`${baseUrl}/api/blog-posts`);
+        const res = await fetch(`${baseUrl}/blog-posts`);
         if (res.ok) {
           const data: BlogPost[] = await res.json();
           setPosts(data.slice(0, 6));

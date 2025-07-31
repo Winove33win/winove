@@ -29,11 +29,11 @@ export const CaseDetail = () => {
       if (!slug) return;
       try {
         const baseUrl = import.meta.env.VITE_API_URL || "";
-        const res = await fetch(`${baseUrl}/api/cases/${slug}`);
+        const res = await fetch(`${baseUrl}/cases/${slug}`);
         if (res.ok) {
           const data = await res.json();
           setCaseItem(data);
-          const relRes = await fetch(`${baseUrl}/api/cases`);
+          const relRes = await fetch(`${baseUrl}/cases`);
           if (relRes.ok) {
             const all = await relRes.json();
             setRelatedCases(all.filter((c: CaseItem) => c.slug !== data.slug).slice(0, 3));

@@ -53,7 +53,7 @@ const TemplateDetail = () => {
       const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
       const baseUrl = import.meta.env.VITE_API_URL || "";
 
-      const response = await fetch(`${baseUrl}/api/checkout`, {
+      const response = await fetch(`${baseUrl}/checkout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
