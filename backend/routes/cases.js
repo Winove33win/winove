@@ -1,5 +1,5 @@
-import express from 'express';
-import db from '../db.js';
+const express = require('express');
+const db = require('../db');
 
 const router = express.Router();
 
@@ -44,4 +44,4 @@ router.get('/cases/:slug', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
