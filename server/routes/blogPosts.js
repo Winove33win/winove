@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/blog-posts', async (_req, res) => {
   try {
     const [rows] = await db.query(
-      'SELECT * FROM posts ORDER BY data_publicacao DESC'
+      'SELECT id, titulo, slug, resumo, conteudo, imagem_destacada, data_publicacao, autor FROM posts ORDER BY data_publicacao DESC'
     );
     res.json(rows);
   } catch (err) {
@@ -18,7 +18,7 @@ router.get('/blog-posts', async (_req, res) => {
 router.get('/blog-posts/:slug', async (req, res) => {
   try {
     const { slug } = req.params;
-    const [rows] = await db.query('SELECT * FROM posts WHERE slug = ?', [slug]);
+    const [rows] = await db.query('SELECT id, titulo, slug, resumo, conteudo, imagem_destacada, data_publicacao, autor FROM posts WHERE slug = ?', [slug]);
     if (rows.length === 0)
       return res.status(404).json({ error: 'Post not found' });
     res.json(rows[0]);

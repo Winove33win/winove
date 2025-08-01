@@ -29,14 +29,13 @@ export const BlogPost = () => {
     const load = async () => {
       if (!slug) return;
       try {
-        const API = import.meta.env.VITE_API_URL || "/api";
-        const res = await fetch(`${API}/blog-posts/${slug}`);
+        const res = await fetch(`/api/blog-posts/${slug}`);
         if (res.ok) {
           const text = await res.text();
           if (!text) throw new Error("Resposta vazia do servidor");
           const data: BlogPost = JSON.parse(text);
           setPost(data);
-          const relRes = await fetch(`${API}/blog-posts`);
+          const relRes = await fetch(`/api/blog-posts`);
           if (relRes.ok) {
             const relText = await relRes.text();
             if (!relText) throw new Error("Resposta vazia do servidor");

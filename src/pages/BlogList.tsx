@@ -26,9 +26,7 @@ export const BlogList = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(
-          "https://winove.com.br/api/blog-posts.php"
-        );
+        const res = await fetch("/api/blog-posts");
         if (res.ok) {
           const text = await res.text();
           if (!text) {

@@ -22,15 +22,21 @@ async function setupDatabase() {
     );
   `;
 
-  const createCasersTable = `
-    CREATE TABLE IF NOT EXISTS casers (
+  const createCasesTable = `
+    CREATE TABLE IF NOT EXISTS cases (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      titulo VARCHAR(255) NOT NULL,
-      cliente VARCHAR(255),
-      descricao TEXT,
-      resultados TEXT,
-      imagem_capa TEXT,
-      data_publicacao DATETIME DEFAULT CURRENT_TIMESTAMP
+      title VARCHAR(255) NOT NULL,
+      slug VARCHAR(255) UNIQUE NOT NULL,
+      excerpt TEXT,
+      coverImage TEXT,
+      tags JSON,
+      metrics JSON,
+      client VARCHAR(255),
+      date DATETIME DEFAULT CURRENT_TIMESTAMP,
+      challenge TEXT,
+      solution TEXT,
+      results TEXT,
+      gallery JSON
     );
   `;
 
@@ -38,8 +44,8 @@ async function setupDatabase() {
     await connection.execute(createPostsTable);
     console.log("✅ Tabela 'posts' criada com sucesso.");
 
-    await connection.execute(createCasersTable);
-    console.log("✅ Tabela 'casers' criada com sucesso.");
+    await connection.execute(createCasesTable);
+    console.log("✅ Tabela 'cases' criada com sucesso.");
   } catch (error) {
     console.error("❌ Erro ao criar tabelas:", error.message);
   } finally {
