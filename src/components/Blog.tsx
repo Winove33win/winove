@@ -30,7 +30,7 @@ export const Blog = () => {
           setArticles(data.slice(0, 6));
         }
       } catch (err) {
-        console.error("fetch blog-posts", err);
+        console.error("fetch /api/blog-posts", err);
       }
     };
     load();
