@@ -1,10 +1,46 @@
 import { Calendar, User, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { blogPosts } from "@/data/blogPosts";
+import { useEffect, useState } from "react";
+
+interface Post {
+  id: number;
+  titulo: string;
+  slug: string;
+  resumo: string;
+  conteudo: string;
+  imagem_destacada: string;
+  data_publicacao: string;
+  autor: string;
+}
+
+function readingTime(content: string): string {
+  const words = content.replace(/<[^>]+>/g, "").split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.ceil(words / 200))} min`;
+}
 
 export const Blog = () => {
-  // Pegar apenas os primeiros 6 posts para mostrar na Home
-  const articles = blogPosts.slice(0, 6);
+  const [articles, setArticles] = useState<Post[] | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch(
+          "https://winove.com.br/api/blog-posts.php"
+        );
+        if (res.ok) {
+          const data: Post[] = await res.json();
+          setArticles(data.slice(0, 6));
+        }
+      } catch (err) {
+        console.error("fetch blog-posts", err);
+      }
+    };
+    load();
+  }, []);
+
+  if (!articles) {
+    return <p>Carregando...</p>;
+  }
 
   return (
     <section id="blog" className="py-24 bg-gradient-navy relative overflow-hidden">
@@ -30,12 +66,15 @@ export const Blog = () => {
 
           {/* Articles Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {articles.map((article, index) => (
-              <Link
-                key={article.slug}
-                to={`/blog/${article.slug}`}
-                className="block"
-              >
+            {articles.length === 0 ? (
+              <p>Nenhum post disponível no momento</p>
+            ) : (
+              articles.map((article, index) => (
+                <Link
+                  key={article.slug}
+                  to={`/blog/${article.slug}`}
+                  className="block"
+                >
                 <article
                   className="glass rounded-2xl overflow-hidden hover-lift group animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
@@ -43,23 +82,16 @@ export const Blog = () => {
                   {/* Article Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={`https://images.unsplash.com/${article.coverImage}?w=600&h=400&fit=crop`}
-                      alt={article.title}
+                      src={article.imagem_destacada}
+                      alt={article.titulo}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-                    
-                    {/* Category Badge */}
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 text-xs font-medium rounded-full bg-primary/20 glass text-primary border border-primary/30">
-                        {article.category}
-                      </span>
-                    </div>
 
                     {/* Read Time */}
                     <div className="absolute top-4 right-4">
                       <span className="px-3 py-1 text-xs font-medium rounded-full glass text-muted-foreground border border-border/20">
-                        {article.readingTime}
+                        {readingTime(article.conteudo)}
                       </span>
                     </div>
                   </div>
@@ -67,22 +99,22 @@ export const Blog = () => {
                   {/* Article Content */}
                   <div className="p-6">
                     <h3 className="text-xl font-bold mb-3 text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300">
-                      {article.title}
+                      {article.titulo}
                     </h3>
-                    
+
                     <p className="text-muted-foreground mb-4 text-sm line-clamp-3">
-                      {article.excerpt}
+                      {article.resumo}
                     </p>
 
                     {/* Article Meta */}
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4" />
-                        <span>{article.author}</span>
+                        <span>{article.autor}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
-                        <span>{new Date(article.date).toLocaleDateString('pt-BR')}</span>
+                        <span>{new Date(article.data_publicacao).toLocaleDateString('pt-BR')}</span>
                       </div>
                     </div>
 
@@ -94,7 +126,8 @@ export const Blog = () => {
                   </div>
                 </article>
               </Link>
-            ))}
+              ))
+            )}
           </div>
 
           {/* View All Button */}

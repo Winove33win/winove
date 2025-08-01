@@ -115,11 +115,77 @@ INSERT INTO blog_posts (slug,title,category,reading_time,author,date,cover_image
       <h2>O Futuro dos Design Systems</h2>
       <p>Com ferramentas como Figma Variables e Design Tokens, o futuro promete ainda mais automação e sincronização entre design e desenvolvimento.</p>
     ');
-CREATE TABLE IF NOT EXISTS cases (id INT AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(255), title VARCHAR(255), client VARCHAR(255), date DATE, cover_image VARCHAR(255), excerpt TEXT, challenge TEXT, solution TEXT, results TEXT);
-INSERT INTO cases (slug,title,client,date,cover_image,excerpt,challenge,solution,results) VALUES ('ecommerce-techstyle-300-conversoes','TechStyle: Aumento de 300% nas Conversões','TechStyle E-commerce','2024-03-10','photo-1460925895917-afdab827c52f','Transformamos uma loja online em uma máquina de vendas com UX otimizado e estratégias de conversão avançadas.','O cliente tinha um e-commerce com baixa taxa de conversão (1.2%), navegação confusa e abandono de carrinho alto (78%). O site não era responsivo e tinha problemas de performance.','Implementamos um redesign completo focado em UX/UI, otimização de performance, checkout simplificado, implementação de prova social, testes A/B contínuos e estratégias de recuperação de carrinho abandonado.','Aumento de 300% na taxa de conversão, redução de 45% no abandono de carrinho, melhoria de 250% na velocidade de carregamento e aumento de 180% no ticket médio.');
-INSERT INTO cases (slug,title,client,date,cover_image,excerpt,challenge,solution,results) VALUES ('rebranding-global-corp-150-reconhecimento','Global Corp: Rebranding que Gerou 150% Mais Reconhecimento','Global Corp Technology','2024-01-22','photo-1611224923853-80b023f02d71','Renovamos completamente a identidade visual de uma multinacional, criando uma marca moderna e memorável.','A Global Corp tinha uma identidade visual desatualizada que não refletia sua posição de liderança no mercado. A marca era inconsistente em diferentes pontos de contato e tinha baixo reconhecimento (12%) entre o público-alvo.','Desenvolvemos uma nova identidade visual completa incluindo logo, paleta de cores, tipografia, sistema de ícones, templates para materiais de marketing, guidelines de marca e implementação em todos os pontos de contato digitais e físicos.','Aumento de 150% no reconhecimento da marca, melhoria de 85% na percepção de modernidade, crescimento de 120% no engajamento em redes sociais e aumento de 95% na geração de leads qualificados.');
-INSERT INTO cases (slug,title,client,date,cover_image,excerpt,challenge,solution,results) VALUES ('seo-healthcare-500-trafego-organico','HealthCare Plus: 500% Mais Tráfego Orgânico','HealthCare Plus Clinic','2024-02-15','photo-1576091160399-112ba8d25d1f','Posicionamos uma clínica médica no topo do Google com estratégia de SEO completa e marketing de conteúdo.','A clínica tinha visibilidade online praticamente zero, com apenas 200 visitantes orgânicos por mês. Não aparecia nas primeiras páginas para nenhuma palavra-chave relevante do setor médico.','Implementamos estratégia completa de SEO técnico, otimização on-page, criação de conteúdo especializado, link building ético, otimização para SEO local e implementação de schema markup médico.','Aumento de 500% no tráfego orgânico, 50+ palavras-chave na primeira página, crescimento de 400% em agendamentos online e posição #1 para termos principais da especialidade.');
-INSERT INTO cases (slug,title,client,date,cover_image,excerpt,challenge,solution,results) VALUES ('startup-edtech-roi-8-1','EduTech Startup: ROI de 8:1 em Tráfego Pago','EduTech Learning Platform','2024-01-08','photo-1551434678-e076c223a692','Geramos um ROI excepcional para startup de educação com campanhas otimizadas de Google Ads e Facebook Ads.','Startup de educação online com orçamento limitado para marketing, CPA alto (R$ 180) e ROI negativo (-1.5:1). As campanhas não estavam segmentadas adequadamente e o funil de conversão tinha vazamentos.','Reestruturação completa das campanhas, segmentação avançada por persona, otimização do funil de conversão, implementação de remarketing inteligente, testes A/B de criativos e landing pages otimizadas.','ROI de 8:1, redução de 70% no CPA, aumento de 350% na taxa de conversão e crescimento de 180% no número de alunos pagantes.');
+CREATE TABLE IF NOT EXISTS cases (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(255),
+  title VARCHAR(255),
+  client VARCHAR(255),
+  date DATE,
+  cover_image VARCHAR(255),
+  excerpt TEXT,
+  challenge TEXT,
+  solution TEXT,
+  results TEXT,
+  tags TEXT,
+  gallery TEXT,
+  metrics TEXT
+);
+INSERT INTO cases (slug,title,client,date,cover_image,excerpt,challenge,solution,results,tags,gallery,metrics) VALUES (
+  'ecommerce-techstyle-300-conversoes',
+  'TechStyle: Aumento de 300% nas Conversões',
+  'TechStyle E-commerce',
+  '2024-03-10',
+  'photo-1460925895917-afdab827c52f',
+  'Transformamos uma loja online em uma máquina de vendas com UX otimizado e estratégias de conversão avançadas.',
+  'O cliente tinha um e-commerce com baixa taxa de conversão (1.2%), navegação confusa e abandono de carrinho alto (78%). O site não era responsivo e tinha problemas de performance.',
+  'Implementamos um redesign completo focado em UX/UI, otimização de performance, checkout simplificado, implementação de prova social, testes A/B contínuos e estratégias de recuperação de carrinho abandonado.',
+  'Aumento de 300% na taxa de conversão, redução de 45% no abandono de carrinho, melhoria de 250% na velocidade de carregamento e aumento de 180% no ticket médio.',
+  '["E-commerce","UI/UX","Performance","Conversao"]',
+  '["photo-1556742049-0cfed4f6a45d","photo-1563013544-824ae1b704d3","photo-1460925895917-afdab827c52f"]',
+  '[{"label":"Taxa de Conversao","value":"+300%","description":"De 1.2% para 4.8%"},{"label":"Abandono de Carrinho","value":"-45%","description":"De 78% para 43%"},{"label":"Velocidade","value":"+250%","description":"De 8s para 2.3s"},{"label":"Ticket Medio","value":"+180%","description":"De R$ 85 para R$ 238"}]'
+);
+INSERT INTO cases (slug,title,client,date,cover_image,excerpt,challenge,solution,results,tags,gallery,metrics) VALUES (
+  'rebranding-global-corp-150-reconhecimento',
+  'Global Corp: Rebranding que Gerou 150% Mais Reconhecimento',
+  'Global Corp Technology',
+  '2024-01-22',
+  'photo-1611224923853-80b023f02d71',
+  'Renovamos completamente a identidade visual de uma multinacional, criando uma marca moderna e memorável.',
+  'A Global Corp tinha uma identidade visual desatualizada que não refletia sua posição de liderança no mercado. A marca era inconsistente em diferentes pontos de contato e tinha baixo reconhecimento (12%) entre o público-alvo.',
+  'Desenvolvemos uma nova identidade visual completa incluindo logo, paleta de cores, tipografia, sistema de ícones, templates para materiais de marketing, guidelines de marca e implementação em todos os pontos de contato digitais e físicos.',
+  'Aumento de 150% no reconhecimento da marca, melhoria de 85% na percepção de modernidade, crescimento de 120% no engajamento em redes sociais e aumento de 95% na geração de leads qualificados.',
+  '["Branding","Design","Estrategia","Identidade Visual"]',
+  '["photo-1611224923853-80b023f02d71","photo-1542744173-8e7e53415bb0","photo-1551434678-e076c223a692"]',
+  '[{"label":"Reconhecimento","value":"+150%","description":"De 12% para 30%"},{"label":"Percepcao de Modernidade","value":"+85%","description":"Pesquisa brand awareness"},{"label":"Engajamento Social","value":"+120%","description":"Media todas as plataformas"},{"label":"Leads Qualificados","value":"+95%","description":"Atribuicao direta a nova marca"}]'
+);
+INSERT INTO cases (slug,title,client,date,cover_image,excerpt,challenge,solution,results,tags,gallery,metrics) VALUES (
+  'seo-healthcare-500-trafego-organico',
+  'HealthCare Plus: 500% Mais Tráfego Orgânico',
+  'HealthCare Plus Clinic',
+  '2024-02-15',
+  'photo-1576091160399-112ba8d25d1f',
+  'Posicionamos uma clínica médica no topo do Google com estratégia de SEO completa e marketing de conteúdo.',
+  'A clínica tinha visibilidade online praticamente zero, com apenas 200 visitantes orgânicos por mês. Não aparecia nas primeiras páginas para nenhuma palavra-chave relevante do setor médico.',
+  'Implementamos estratégia completa de SEO técnico, otimização on-page, criação de conteúdo especializado, link building ético, otimização para SEO local e implementação de schema markup médico.',
+  'Aumento de 500% no tráfego orgânico, 50+ palavras-chave na primeira página, crescimento de 400% em agendamentos online e posição #1 para termos principais da especialidade.',
+  '["SEO","Conteudo","Healthcare","Local SEO"]',
+  '["photo-1576091160399-112ba8d25d1f","photo-1559757148-5c350d0d3c56","photo-1504813184591-01572f98c85f"]',
+  '[{"label":"Trafego Organico","value":"+500%","description":"De 200 para 1.200 visitantes/mes"},{"label":"Keywords Top 10","value":"50+","description":"Palavras-chave na primeira pagina"},{"label":"Agendamentos","value":"+400%","description":"Via formulario online"},{"label":"Posicoes #1","value":"15","description":"Termos principais da especialidade"}]'
+);
+INSERT INTO cases (slug,title,client,date,cover_image,excerpt,challenge,solution,results,tags,gallery,metrics) VALUES (
+  'startup-edtech-roi-8-1',
+  'EduTech Startup: ROI de 8:1 em Tráfego Pago',
+  'EduTech Learning Platform',
+  '2024-01-08',
+  'photo-1551434678-e076c223a692',
+  'Geramos um ROI excepcional para startup de educação com campanhas otimizadas de Google Ads e Facebook Ads.',
+  'Startup de educação online com orçamento limitado para marketing, CPA alto (R$ 180) e ROI negativo (-1.5:1). As campanhas não estavam segmentadas adequadamente e o funil de conversão tinha vazamentos.',
+  'Reestruturação completa das campanhas, segmentação avançada por persona, otimização do funil de conversão, implementação de remarketing inteligente, testes A/B de criativos e landing pages otimizadas.',
+  'ROI de 8:1, redução de 70% no CPA, aumento de 350% na taxa de conversão e crescimento de 180% no número de alunos pagantes.',
+  '["Google Ads","Facebook Ads","EdTech","ROI"]',
+  '["photo-1551434678-e076c223a692","photo-1522202176988-66273c2fd55f","photo-1434030216411-0b793f4b4173"]',
+  '[{"label":"ROI","value":"8:1","description":"De -1.5:1 para 8:1"},{"label":"CPA","value":"-70%","description":"De R$ 180 para R$ 54"},{"label":"Taxa de Conversao","value":"+350%","description":"De 0.8% para 3.6%"},{"label":"Alunos Pagantes","value":"+180%","description":"Crescimento mensal"}]'
+);
 CREATE TABLE IF NOT EXISTS templates (id INT AUTO_INCREMENT PRIMARY KEY, slug VARCHAR(255), title VARCHAR(255), category VARCHAR(255), price DECIMAL(10,2), originalPrice DECIMAL(10,2), description TEXT, difficulty VARCHAR(50), pages INT, responsive BOOLEAN, seoOptimized BOOLEAN, demoUrl VARCHAR(255));
 INSERT INTO templates (slug,title,category,price,originalPrice,description,difficulty,pages,responsive,seoOptimized,demoUrl) VALUES ('business-pro-template','Business Pro - Template Corporativo','Negócios',149.9,199.9,'Template profissional perfeito para empresas que desejam uma presença online impactante. Design moderno e responsivo com todas as páginas essenciais para um site corporativo completo.','Intermediário',8,1,1,'https://demo.example.com/business-pro');
 INSERT INTO templates (slug,title,category,price,originalPrice,description,difficulty,pages,responsive,seoOptimized,demoUrl) VALUES ('restaurant-deluxe','Restaurant Deluxe - Template para Restaurantes','Alimentação',129.9,NULL,'Template elegante especialmente desenvolvido para restaurantes, cafés e estabelecimentos gastronômicos. Com design atrativo e funcionalidades específicas para o setor alimentício.','Iniciante',6,1,1,'https://demo.example.com/restaurant-deluxe');

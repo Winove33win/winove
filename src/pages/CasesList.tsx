@@ -2,9 +2,44 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ExternalLink, TrendingUp } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { cases } from "@/data/cases";
+import { useEffect, useState } from "react";
+
+interface CaseItem {
+  slug: string;
+  title: string;
+  client: string;
+  date: string;
+  coverImage: string;
+  excerpt: string;
+  challenge: string;
+  solution: string;
+  results: string;
+  gallery: string[];
+  tags: string[];
+  metrics: { label: string; value: string; description: string }[];
+}
 
 export const CasesList = () => {
+  const [items, setItems] = useState<CaseItem[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const API = import.meta.env.VITE_API_URL || "/api";
+        const res = await fetch(`${API}/cases`);
+        if (res.ok) {
+          const text = await res.text();
+          if (!text) throw new Error("Resposta vazia do servidor");
+          const data = JSON.parse(text);
+          setItems(data);
+        }
+      } catch (err) {
+        console.error('fetch cases', err);
+      }
+    };
+    load();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -64,7 +99,7 @@ export const CasesList = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8">
-              {cases.map((caseItem, index) => (
+              {items.map((caseItem, index) => (
                 <article
                   key={caseItem.slug}
                   className="glass rounded-2xl overflow-hidden hover-lift group animate-fade-in-up"

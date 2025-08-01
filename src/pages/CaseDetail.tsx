@@ -2,15 +2,52 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Calendar, TrendingUp, Target, Lightbulb, Trophy, ArrowRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getCase, getRelatedCases } from "@/data/cases";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+interface CaseItem {
+  slug: string;
+  title: string;
+  client: string;
+  date: string;
+  coverImage: string;
+  excerpt: string;
+  challenge: string;
+  solution: string;
+  results: string;
+  gallery: string[];
+  tags: string[];
+  metrics: { label: string; value: string; description: string }[];
+}
 
 export const CaseDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const caseItem = slug ? getCase(slug) : undefined;
-  const relatedCases = caseItem ? getRelatedCases(caseItem.slug) : [];
+  const [caseItem, setCaseItem] = useState<CaseItem | null>(null);
+  const [relatedCases, setRelatedCases] = useState<CaseItem[]>([]);
 
   useEffect(() => {
+    const load = async () => {
+      if (!slug) return;
+      try {
+        const API = import.meta.env.VITE_API_URL || "/api";
+        const res = await fetch(`${API}/cases/${slug}`);
+        if (res.ok) {
+          const text = await res.text();
+          if (!text) throw new Error("Resposta vazia do servidor");
+          const data = JSON.parse(text);
+          setCaseItem(data);
+          const relRes = await fetch(`${API}/cases`);
+          if (relRes.ok) {
+            const relText = await relRes.text();
+            if (!relText) throw new Error("Resposta vazia do servidor");
+            const all = JSON.parse(relText);
+            setRelatedCases(all.filter((c: CaseItem) => c.slug !== data.slug).slice(0, 3));
+          }
+        }
+      } catch (err) {
+        console.error('fetch case', err);
+      }
+    };
+    load();
     window.scrollTo(0, 0);
   }, [slug]);
 

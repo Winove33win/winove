@@ -31,7 +31,12 @@ cd <YOUR_PROJECT_NAME>
 # Step 3: Install the necessary dependencies.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Create a `.env` file based on `.env.example` (required for builds).
+cp .env.example .env
+# Ensure the `VITE_API_URL` variable is present. For production it should be
+# `https://winove.com.br/api`.
+
+# Step 5: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
 
@@ -72,6 +77,10 @@ The local server relies on the following packages:
 
 Simply open [Winove](https://lovable.dev/projects/47e97737-0d5b-4617-a6fc-0cc3a9fb4b6b) and click on Share -> Publish.
 
+When building locally or running `deploy.sh`, make sure a `.env` file exists
+with `VITE_API_URL` defined. The provided `deploy.sh` script will create a
+minimal `.env` automatically.
+
 ## Can I connect a custom domain to my Winove project?
 
 Yes, you can!
@@ -106,3 +115,31 @@ IP address of this Codex environment with:
 curl ifconfig.me
 ```
 
+---
+
+## 📦 Scripts de Banco de Dados (Winove)
+
+Este projeto inclui scripts utilitários para interagir com o banco de dados MySQL.
+
+### ▶️ Scripts incluídos
+
+| Arquivo                      | Função                                               |
+|-----------------------------|-------------------------------------------------------|
+| `testConnection.js`         | Testa a conexão com o banco                          |
+| `createTable.js`            | Cria a tabela `pagamentos`                           |
+| `insertData.js`             | Insere dados fictícios                               |
+| `selectData.js`             | Busca dados da tabela                                |
+| `grant-access.sql`          | Libera acesso externo ao banco para um IP remoto     |
+| `conectar-banco-winove.bat` | Executa o teste de conexão com um clique (Windows)   |
+
+### 🛠️ Instruções
+
+1. Execute os scripts com Node.js:
+
+```bash
+node createTable.js
+node insertData.js
+node selectData.js
+
+GRANT ALL PRIVILEGES ON fernando_winove_com_br.* TO 'Winove'@'%' IDENTIFIED BY '9*19avmU0';
+FLUSH PRIVILEGES;
