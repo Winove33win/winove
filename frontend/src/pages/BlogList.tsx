@@ -25,8 +25,9 @@ export const BlogList = () => {
 
   useEffect(() => {
     const load = async () => {
+      const API = import.meta.env.VITE_API_URL || "/api";
       try {
-        const res = await fetch("/api/blog-posts");
+        const res = await fetch(`${API}/blog-posts`);
         if (res.ok) {
           const data: BlogPost[] = await res.json();
           setPosts(data.slice(0, 6));

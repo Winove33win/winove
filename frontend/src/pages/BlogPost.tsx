@@ -28,12 +28,13 @@ export const BlogPost = () => {
   useEffect(() => {
     const load = async () => {
       if (!slug) return;
+      const API = import.meta.env.VITE_API_URL || "/api";
       try {
-        const res = await fetch(`/api/blog-posts/${slug}`);
+        const res = await fetch(`${API}/blog-posts/${slug}`);
         if (res.ok) {
           const data: BlogPost = await res.json();
           setPost(data);
-          const relRes = await fetch(`/api/blog-posts`);
+          const relRes = await fetch(`${API}/blog-posts`);
           if (relRes.ok) {
             const allPosts: BlogPost[] = await relRes.json();
             const related = allPosts.filter(p => p.slug !== slug).slice(0, 3);

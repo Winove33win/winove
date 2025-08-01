@@ -35,6 +35,10 @@ npm i
 cp .env.example .env
 # Ensure the `VITE_API_URL` variable is present. For production it should be
 # `https://winove.com.br/api`.
+# When the backend is served from a different domain or port, set
+# `VITE_API_URL` to that backend's base URL (e.g. `https://example.com/api`).
+# If undefined, the application defaults to `/api` and assumes the backend is
+# hosted under the same domain.
 
 # Step 5: Start the development server with auto-reloading and an instant preview.
 npm run dev
