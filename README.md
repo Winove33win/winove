@@ -99,6 +99,13 @@ mysql -u fernandowinove -p Winove-new < winove_offline.sql
 
 You can also use phpMyAdmin or another GUI to import the file manually.
 
+## Offline JSON mode
+
+For development without a running MySQL server, set `USE_JSON_DB=true` in
+`backend/.env`. The API will then read data from the JSON files located in
+`backend/data/`, allowing the blog and cases pages to function entirely
+offline.
+
 ## Testing database connectivity
 
 Use the `testFullConnection.js` script to diagnose network issues and test the
