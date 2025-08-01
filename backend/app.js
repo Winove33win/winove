@@ -1,28 +1,28 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import blogPostsRouter from './routes/blogPosts.js';
-
-dotenv.config();
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const blogPostsRouter = require('./routes/blogPosts');
+const casesRouter = require('./routes/cases');
+const checkoutRouter = require('./routes/checkout');
+require('dotenv').config();
 
 const app = express();
-
-// Enable CORS for all routes
 app.use(cors());
-
-// Parse JSON requests
 app.use(express.json());
 
-// Use blog posts routes
-app.use('/api', blogPostsRouter);
+const frontendPath = path.join(__dirname, 'dist');
+app.use(express.static(frontendPath));
 
-
-
-
-
-
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
+
+app.use('/api', blogPostsRouter);
+app.use('/api', casesRouter);
+app.use('/api', checkoutRouter);
+
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(frontendPath, 'index.html'));
+});
+
+module.exports = app;

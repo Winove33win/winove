@@ -1,5 +1,5 @@
-import Stripe from 'stripe';
-import express from 'express';
+const express = require('express');
+const Stripe = require('stripe');
 
 const stripeSecret = process.env.STRIPE_SECRET_KEY;
 if (!stripeSecret) {
@@ -14,18 +14,11 @@ router.post('/checkout', async (req, res) => {
   console.log('[checkout] requested', id);
 
   const produtos = {
-    template_restaurante: {
-      name: 'Restaurant Deluxe',
-      price: 12990,
-    },
-    template_consultorio: {
-      name: 'Consultório Premium',
-      price: 14990,
-    },
+    template_restaurante: { name: 'Restaurant Deluxe', price: 12990 },
+    template_consultorio: { name: 'Consultório Premium', price: 14990 },
   };
 
   const produto = produtos[id];
-
   if (!produto) {
     console.warn('[checkout] produto invalido:', id);
     return res.status(400).json({ error: 'Produto inválido' });
@@ -56,4 +49,4 @@ router.post('/checkout', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
