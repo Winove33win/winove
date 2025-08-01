@@ -13,11 +13,10 @@ function parseJson(value) {
 
 router.get('/cases', async (_req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM cases ORDER BY date DESC');
+    const [rows] = await db.query('SELECT id, title, slug, excerpt, coverImage, tags, metrics FROM cases ORDER BY id DESC');
     const cases = rows.map((r) => ({
       ...r,
       tags: parseJson(r.tags),
-      gallery: parseJson(r.gallery),
       metrics: parseJson(r.metrics),
     }));
     res.json(cases);

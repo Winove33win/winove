@@ -26,16 +26,14 @@ export const BlogList = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(
-          "https://winove.com.br/api/blog-posts.php"
-        );
+        const res = await fetch("/api/blog-posts");
         if (res.ok) {
-          const text = await res.text();
-          if (!text) {
-            throw new Error("Resposta vazia do servidor");
-          }
-          const data: BlogPost[] = JSON.parse(text);
+          const data: BlogPost[] = await res.json();
           setPosts(data.slice(0, 6));
+        } else {
+          console.error("API Error:", res.status, res.statusText);
+          const text = await res.text();
+          console.error("Response body:", text);
         }
       } catch (err) {
         console.error('fetch blog-posts', err);

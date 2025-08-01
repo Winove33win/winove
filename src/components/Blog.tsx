@@ -24,12 +24,14 @@ export const Blog = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch(
-          "https://winove.com.br/api/blog-posts.php"
-        );
+        const res = await fetch("/api/blog-posts");
         if (res.ok) {
           const data: Post[] = await res.json();
           setArticles(data.slice(0, 6));
+        } else {
+          console.error("API Error:", res.status, res.statusText);
+          const text = await res.text();
+          console.error("Response body:", text);
         }
       } catch (err) {
         console.error("fetch blog-posts", err);

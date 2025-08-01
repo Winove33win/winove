@@ -29,20 +29,24 @@ export const BlogPost = () => {
     const load = async () => {
       if (!slug) return;
       try {
-        const API = import.meta.env.VITE_API_URL || "/api";
-        const res = await fetch(`${API}/blog-posts/${slug}`);
+        const res = await fetch(`/api/blog-posts/${slug}`);
         if (res.ok) {
-          const text = await res.text();
-          if (!text) throw new Error("Resposta vazia do servidor");
-          const data: BlogPost = JSON.parse(text);
+          const data: BlogPost = await res.json();
           setPost(data);
-          const relRes = await fetch(`${API}/blog-posts`);
+          const relRes = await fetch(`/api/blog-posts`);
           if (relRes.ok) {
-            const relText = await relRes.text();
-            if (!relText) throw new Error("Resposta vazia do servidor");
-            const all: BlogPost[] = JSON.parse(relText);
-            setRelatedPosts(all.filter((p) => p.slug !== data.slug).slice(0, 3));
+            const allPosts: BlogPost[] = await relRes.json();
+            const related = allPosts.filter(p => p.slug !== slug).slice(0, 3);
+            setRelatedPosts(related);
+          } else {
+            console.error("Related posts API Error:", relRes.status, relRes.statusText);
+            const text = await relRes.text();
+            console.error("Related posts response body:", text);
           }
+        } else {
+          console.error("API Error:", res.status, res.statusText);
+          const text = await res.text();
+          console.error("Response body:", text);
         }
       } catch (err) {
         console.error('fetch blog-post', err);

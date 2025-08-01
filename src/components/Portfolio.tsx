@@ -1,10 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ExternalLink, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
-import { cases } from "@/data/cases";
+
+interface Case {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  coverImage: string;
+  tags: string[];
+  metrics: Array<{ label: string; value: string }>;
+}
 
 export const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [cases, setCases] = useState<Case[]>([]);
 
   const filters = [
     { id: "all", name: "Todos" },
@@ -14,8 +24,23 @@ export const Portfolio = () => {
     { id: "Google Ads", name: "Tráfego Pago" }
   ];
 
-  // Mapear cases para projetos, pegando apenas os primeiros 4
-  const projects = cases.slice(0, 4).map(caseItem => ({
+  useEffect(() => {
+    const loadCases = async () => {
+      try {
+        const res = await fetch("/api/cases");
+        if (res.ok) {
+          const data: Case[] = await res.json();
+          setCases(data.slice(0, 4));
+        }
+      } catch (err) {
+        console.error("fetch cases", err);
+      }
+    };
+    loadCases();
+  }, []);
+
+  // Mapear cases para projetos
+  const projects = cases.map(caseItem => ({
     slug: caseItem.slug,
     title: caseItem.title,
     description: caseItem.excerpt,
