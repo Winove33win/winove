@@ -1,35 +1,28 @@
-const express = require('express');
-const mysql = require('mysql2/promise');
+import express from 'express';
+import pool from '../db.js';
 
 const router = express.Router();
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 5,
-});
-
-function toArray(value) {
-  if (!value) return [];
+// Função auxiliar para converter JSON string em objeto/array JavaScript
+const parseJSONField = (value) => {
+  if (!value) return null;
   if (typeof value === 'string') {
     try {
-      const j = JSON.parse(value);
-      return Array.isArray(j) ? j : [];
-    } catch {
-      return [];
+      return JSON.parse(value);
+    } catch (err) {
+      console.error('Erro ao fazer parse do JSON:', err);
+      return null;
     }
   }
-  return Array.isArray(value) ? value : [];
-}
+  // Se já for um objeto/array (tipo JSON do MySQL), retorna como está
+  return value;
+};
 
-router.get('/cases', async (_req, res) => {
+// Lista todos os cases
+router.get('/', async (_req, res) => {
   try {
     const [rows] = await pool.query(`
-      SELECT
+      SELECT 
         id,
         title,
         slug,
@@ -46,12 +39,13 @@ router.get('/cases', async (_req, res) => {
       FROM cases
       ORDER BY id DESC
     `);
-    const data = rows.map((r) => ({
-      ...r,
-      metrics: toArray(r.metrics),
-      tags: toArray(r.tags),
-      gallery: toArray(r.gallery),
-    }));
+    // Converte campos JSON (tags, gallery, metrics) para arrays/objetos
+    const data = rows.map(row => {
+      const tags = parseJSONField(row.tags) ?? [];
+      const gallery = parseJSONField(row.gallery) ?? [];
+      const metrics = parseJSONField(row.metrics) ?? {};
+      return { ...row, tags, gallery, metrics };
+    });
     res.json(data);
   } catch (err) {
     console.error(err);
@@ -59,11 +53,12 @@ router.get('/cases', async (_req, res) => {
   }
 });
 
-router.get('/cases/:slug', async (req, res) => {
+// Detalhe de um case por slug
+router.get('/:slug', async (req, res) => {
   try {
     const [rows] = await pool.query(
       `
-      SELECT
+      SELECT 
         id,
         title,
         slug,
@@ -83,15 +78,16 @@ router.get('/cases/:slug', async (req, res) => {
     `,
       [req.params.slug]
     );
-
-    if (!rows.length) return res.status(404).json({ error: 'not_found' });
-
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'not_found' });
+    }
     const row = rows[0];
+    // Converte campos JSON do registro encontrado
     const data = {
       ...row,
-      metrics: toArray(row.metrics),
-      tags: toArray(row.tags),
-      gallery: toArray(row.gallery),
+      tags: parseJSONField(row.tags) ?? [],
+      gallery: parseJSONField(row.gallery) ?? [],
+      metrics: parseJSONField(row.metrics) ?? {}
     };
     res.json(data);
   } catch (err) {
@@ -100,5 +96,4 @@ router.get('/cases/:slug', async (req, res) => {
   }
 });
 
-module.exports = router;
-
+export default router;
