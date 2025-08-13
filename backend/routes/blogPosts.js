@@ -7,14 +7,14 @@ const router = express.Router();
 router.get('/', async (_req, res) => {
   try {
     const [rows] = await pool.query(`
-      SELECT 
-        id, 
-        titulo, 
-        slug, 
-        resumo, 
-        imagem_destacada, 
-        data_publicacao, 
-        autor
+      SELECT
+        id,
+        titulo AS title,
+        slug,
+        resumo AS excerpt,
+        imagem_destacada AS cover_image,
+        data_publicacao AS date,
+        autor AS author
       FROM blog_posts
       ORDER BY data_publicacao DESC, id DESC
     `);
@@ -30,15 +30,15 @@ router.get('/:slug', async (req, res) => {
   try {
     const [rows] = await pool.query(
       `
-      SELECT 
-        id, 
-        titulo, 
-        slug, 
-        resumo, 
-        conteudo, 
-        imagem_destacada, 
-        data_publicacao, 
-        autor
+      SELECT
+        id,
+        titulo AS title,
+        slug,
+        resumo AS excerpt,
+        conteudo AS content,
+        imagem_destacada AS cover_image,
+        data_publicacao AS date,
+        autor AS author
       FROM blog_posts
       WHERE slug = ?
       LIMIT 1
