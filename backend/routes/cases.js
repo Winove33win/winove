@@ -21,23 +21,23 @@ const parseJSONField = (value) => {
 // Lista todos os cases
 router.get('/', async (_req, res) => {
   try {
+    // Seleciona apenas colunas existentes na tabela `cases` e alia created_at para date.
     const [rows] = await pool.query(`
-      SELECT 
+      SELECT
         id,
         title,
         slug,
         excerpt,
         coverImage,
+        content,
         client,
-        date,
-        challenge,
-        solution,
-        results,
-        gallery,
+        category,
+        created_at AS date,
         tags,
-        metrics
+        metrics,
+        gallery
       FROM cases
-      ORDER BY id DESC
+      ORDER BY created_at DESC, id DESC
     `);
     // Converte campos JSON (tags, gallery, metrics) para arrays/objetos
     const data = rows.map(row => {
@@ -58,24 +58,23 @@ router.get('/:slug', async (req, res) => {
   try {
     const [rows] = await pool.query(
       `
-      SELECT 
+      SELECT
         id,
         title,
         slug,
         excerpt,
         coverImage,
+        content,
         client,
-        date,
-        challenge,
-        solution,
-        results,
-        gallery,
+        category,
+        created_at AS date,
         tags,
-        metrics
+        metrics,
+        gallery
       FROM cases
       WHERE slug = ?
       LIMIT 1
-    `,
+      `,
       [req.params.slug]
     );
     if (rows.length === 0) {
