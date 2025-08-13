@@ -21,7 +21,7 @@ const parseJSONField = (value) => {
 // Lista todos os cases
 router.get('/', async (_req, res) => {
   try {
-    // Seleciona apenas colunas existentes na tabela `cases` e alia created_at para date.
+    // Seleciona apenas colunas existentes na tabela `cases`.
     const [rows] = await pool.query(`
       SELECT
         id,
@@ -32,7 +32,7 @@ router.get('/', async (_req, res) => {
         content,
         client,
         category,
-        created_at AS date,
+        created_at,
         tags,
         metrics,
         gallery
@@ -67,7 +67,7 @@ router.get('/:slug', async (req, res) => {
         content,
         client,
         category,
-        created_at AS date,
+        created_at,
         tags,
         metrics,
         gallery
