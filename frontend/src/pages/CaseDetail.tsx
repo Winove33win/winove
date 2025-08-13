@@ -4,6 +4,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useEffect, useState } from "react";
 
+type Metric = { label: string; value: string; description?: string } | string;
+
 interface CaseItem {
   slug: string;
   title: string;
@@ -14,10 +16,24 @@ interface CaseItem {
   challenge: string;
   solution: string;
   results: string;
-  gallery: string[];
-  tags: string[];
-  metrics: { label: string; value: string; description: string }[];
+  gallery: string[] | string | null;
+  tags: string[] | string | null;
+  metrics: Metric[] | string | null;
 }
+
+const safeArray = (v: any): any[] =>
+  Array.isArray(v)
+    ? v
+    : typeof v === "string"
+    ? (() => {
+        try {
+          const j = JSON.parse(v);
+          return Array.isArray(j) ? j : [];
+        } catch {
+          return [];
+        }
+      })()
+    : [];
 
 export const CaseDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -70,6 +86,9 @@ export const CaseDetail = () => {
       </div>
     );
   }
+  const tags = safeArray(caseItem.tags);
+  const metrics = safeArray(caseItem.metrics);
+  const gallery = safeArray(caseItem.gallery);
 
   return (
     <div className="min-h-screen bg-background">
@@ -116,16 +135,18 @@ export const CaseDetail = () => {
                 </div>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-2">
-                  {caseItem.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 text-xs rounded-full bg-secondary text-secondary-foreground"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                {tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1 text-xs rounded-full bg-secondary text-secondary-foreground"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Featured Image */}
@@ -143,31 +164,41 @@ export const CaseDetail = () => {
       </section>
 
       {/* Metrics Section */}
-      <section className="py-16 bg-gradient-navy">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {caseItem.metrics.map((metric, index) => (
-                <div 
-                  key={index}
-                  className="glass rounded-2xl p-6 text-center hover-lift animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
-                    {metric.value}
+      {metrics.length > 0 && (
+        <section className="py-16 bg-gradient-navy">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {metrics.map((metric, index) => (
+                  <div
+                    key={index}
+                    className="glass rounded-2xl p-6 text-center hover-lift animate-fade-in-up"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    {typeof metric === 'string' ? (
+                      <div className="text-foreground font-semibold">{metric}</div>
+                    ) : (
+                      <>
+                        <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
+                          {metric.value}
+                        </div>
+                        <div className="text-foreground font-semibold mb-1">
+                          {metric.label}
+                        </div>
+                        {metric.description && (
+                          <div className="text-xs text-muted-foreground">
+                            {metric.description}
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
-                  <div className="text-foreground font-semibold mb-1">
-                    {metric.label}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {metric.description}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Case Details */}
       <section className="py-16 bg-gradient-navy">
@@ -218,7 +249,7 @@ export const CaseDetail = () => {
       </section>
 
       {/* Gallery */}
-      {caseItem.gallery.length > 0 && (
+      {gallery.length > 0 && (
         <section className="py-16 bg-gradient-navy">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
@@ -229,7 +260,7 @@ export const CaseDetail = () => {
               </h2>
               
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {caseItem.gallery.map((image, index) => (
+                {gallery.map((image, index) => (
                   <div 
                     key={index}
                     className="relative h-64 overflow-hidden rounded-2xl hover-lift animate-fade-in-up"
