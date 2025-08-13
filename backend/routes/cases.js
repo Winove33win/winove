@@ -29,15 +29,20 @@ function toArray(value) {
 router.get('/cases', async (_req, res) => {
   try {
     const [rows] = await pool.query(`
-      SELECT 
+      SELECT
         id,
-        titulo       AS title,
+        title,
         slug,
-        descricao    AS description,
-        imagem       AS image,
-        resultados   AS metrics,
-        tags         AS tags,
-        data_publicacao AS published_at
+        excerpt,
+        coverImage,
+        client,
+        date,
+        challenge,
+        solution,
+        results,
+        gallery,
+        tags,
+        metrics
       FROM cases
       ORDER BY id DESC
     `);
@@ -45,6 +50,7 @@ router.get('/cases', async (_req, res) => {
       ...r,
       metrics: toArray(r.metrics),
       tags: toArray(r.tags),
+      gallery: toArray(r.gallery),
     }));
     res.json(data);
   } catch (err) {
@@ -57,16 +63,20 @@ router.get('/cases/:slug', async (req, res) => {
   try {
     const [rows] = await pool.query(
       `
-      SELECT 
+      SELECT
         id,
-        titulo       AS title,
+        title,
         slug,
-        conteudo     AS content,
-        descricao    AS description,
-        imagem       AS image,
-        resultados   AS metrics,
-        tags         AS tags,
-        data_publicacao AS published_at
+        excerpt,
+        coverImage,
+        client,
+        date,
+        challenge,
+        solution,
+        results,
+        gallery,
+        tags,
+        metrics
       FROM cases
       WHERE slug = ?
       LIMIT 1
@@ -81,6 +91,7 @@ router.get('/cases/:slug', async (req, res) => {
       ...row,
       metrics: toArray(row.metrics),
       tags: toArray(row.tags),
+      gallery: toArray(row.gallery),
     };
     res.json(data);
   } catch (err) {
