@@ -18,10 +18,29 @@ const parseJSONField = (value) => {
   return value;
 };
 
+// Normaliza o campo metrics para sempre retornar um array de objetos
+const parseMetricsField = (value) => {
+  const parsed = parseJSONField(value);
+  if (Array.isArray(parsed)) return parsed;
+  if (parsed && typeof parsed === 'object') {
+    return Object.entries(parsed).map(([label, val]) => {
+      if (val && typeof val === 'object') {
+        return {
+          label,
+          value: String(val.value ?? ''),
+          description: val.description ?? ''
+        };
+      }
+      return { label, value: String(val) };
+    });
+  }
+  return [];
+};
+
 // Lista todos os cases
 router.get('/', async (_req, res) => {
   try {
-    // Seleciona apenas colunas existentes na tabela `cases` e alia created_at para date.
+    // Seleciona apenas colunas existentes na tabela `cases`.
     const [rows] = await pool.query(`
       SELECT
         id,
@@ -43,7 +62,7 @@ router.get('/', async (_req, res) => {
     const data = rows.map(row => {
       const tags = parseJSONField(row.tags) ?? [];
       const gallery = parseJSONField(row.gallery) ?? [];
-      const metrics = parseJSONField(row.metrics) ?? {};
+      const metrics = parseMetricsField(row.metrics);
       return { ...row, tags, gallery, metrics };
     });
     res.json(data);
@@ -86,7 +105,7 @@ router.get('/:slug', async (req, res) => {
       ...row,
       tags: parseJSONField(row.tags) ?? [],
       gallery: parseJSONField(row.gallery) ?? [],
-      metrics: parseJSONField(row.metrics) ?? {}
+      metrics: parseMetricsField(row.metrics)
     };
     res.json(data);
   } catch (err) {
