@@ -12,7 +12,7 @@ router.get('/', async (_req, res) => {
         titulo AS title,
         slug,
         resumo AS excerpt,
-        imagem_destacada AS cover_image,
+        imagem_destacada AS coverImage,
         data_publicacao AS date,
         autor AS author
       FROM blog_posts
@@ -36,7 +36,7 @@ router.get('/:slug', async (req, res) => {
         slug,
         resumo AS excerpt,
         conteudo AS content,
-        imagem_destacada AS cover_image,
+        imagem_destacada AS coverImage,
         data_publicacao AS date,
         autor AS author
       FROM blog_posts
