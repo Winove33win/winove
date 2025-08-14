@@ -7,7 +7,6 @@ import morgan from 'morgan';
 
 import blogPostsRoute from './routes/blogPosts.js';  // GET /api/blog-posts, /api/blog-posts/:slug
 import casesRoute from './routes/cases.js';          // GET /api/cases,      /api/cases/:slug
-import checkoutRoute from './routes/checkout.js';    // POST /api/checkout   (se existir)
 
 const app = express();
 
@@ -23,7 +22,12 @@ app.get('/api/health', (_req, res) => {
 // ROTAS DA API (cada uma no seu prefixo)
 app.use('/api/blog-posts', blogPostsRoute);
 app.use('/api/cases',      casesRoute);
-app.use('/api/checkout',   checkoutRoute); // deixe montado apenas se o arquivo existir
+
+// monta rota de checkout apenas se a chave STRIPE_SECRET_KEY estiver definida
+if (process.env.STRIPE_SECRET_KEY) {
+  const { default: checkoutRoute } = await import('./routes/checkout.js');
+  app.use('/api/checkout', checkoutRoute);
+}
 
 // (opcional) rota 404 de API
 app.use('/api', (_req, res) => res.status(404).json({ error: 'not_found' }));
