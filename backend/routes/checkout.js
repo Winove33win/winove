@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import Stripe from 'stripe';
+import { successUrl, cancelUrl, produtos } from '../config/checkout.js';
 
 const router = Router();
 
@@ -18,11 +19,6 @@ router.post('/', async (req, res) => {
 
   const { id } = req.body;
   console.log('[checkout] requested', id);
-
-  const produtos = {
-    template_restaurante: { name: 'Restaurant Deluxe', price: 12990 },
-    template_consultorio: { name: 'Consultório Premium', price: 14990 },
-  };
 
   const produto = produtos[id];
   if (!produto) {
@@ -44,8 +40,8 @@ router.post('/', async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: 'https://winove.vercel.app/sucesso',
-      cancel_url: 'https://winove.vercel.app/cancelado',
+      success_url: successUrl,
+      cancel_url: cancelUrl,
     });
 
     res.json({ sessionId: session.id });

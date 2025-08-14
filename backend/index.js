@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config(); // carrega .env ANTES de qualquer import que use process.env
+import 'dotenv/config'; // carrega .env ANTES de qualquer import que use process.env
 
 import express from 'express';
 import cors from 'cors';
