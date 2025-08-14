@@ -25,8 +25,13 @@ app.use('/api/cases',      casesRoute);
 
 // monta rota de checkout apenas se a chave STRIPE_SECRET_KEY estiver definida
 if (process.env.STRIPE_SECRET_KEY) {
-  const { default: checkoutRoute } = await import('./routes/checkout.js');
-  app.use('/api/checkout', checkoutRoute);
+  import('./routes/checkout.js')
+    .then(({ default: checkoutRoute }) => {
+      app.use('/api/checkout', checkoutRoute);
+    })
+    .catch((err) => {
+      console.error('Erro ao carregar checkout:', err);
+    });
 }
 
 // (opcional) rota 404 de API
