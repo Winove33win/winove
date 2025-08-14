@@ -51,7 +51,7 @@ router.get('/', async (_req, res) => {
         content,
         client,
         category,
-        created_at AS date,
+        DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS date,
         tags,
         metrics,
         gallery
@@ -63,7 +63,11 @@ router.get('/', async (_req, res) => {
       const tags = parseJSONField(row.tags) ?? [];
       const gallery = parseJSONField(row.gallery) ?? [];
       const metrics = parseMetricsField(row.metrics);
-      return { ...row, tags, gallery, metrics };
+      const coverImage = row.coverImage
+        ? row.coverImage.replace('https://www.', 'https://')
+        : null;
+      const date = row.date ? row.date.replace(' ', 'T') : null;
+      return { ...row, tags, gallery, metrics, coverImage, date };
     });
     res.json(data);
   } catch (err) {
@@ -86,7 +90,7 @@ router.get('/:slug', async (req, res) => {
         content,
         client,
         category,
-        created_at AS date,
+        DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS date,
         tags,
         metrics,
         gallery
@@ -105,7 +109,11 @@ router.get('/:slug', async (req, res) => {
       ...row,
       tags: parseJSONField(row.tags) ?? [],
       gallery: parseJSONField(row.gallery) ?? [],
-      metrics: parseMetricsField(row.metrics)
+      metrics: parseMetricsField(row.metrics),
+      coverImage: row.coverImage
+        ? row.coverImage.replace('https://www.', 'https://')
+        : null,
+      date: row.date ? row.date.replace(' ', 'T') : null
     };
     res.json(data);
   } catch (err) {
