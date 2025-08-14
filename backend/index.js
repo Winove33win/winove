@@ -13,6 +13,13 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; img-src 'self' data: blob: https://winove.com.br;"
+  );
+  next();
+});
 
 // healthcheck simples
 app.get('/api/health', (_req, res) => {
