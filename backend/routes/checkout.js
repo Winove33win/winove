@@ -1,15 +1,21 @@
-const express = require('express');
-const Stripe = require('stripe');
+import { Router } from 'express';
+import Stripe from 'stripe';
+
+const router = Router();
 
 const stripeSecret = process.env.STRIPE_SECRET_KEY;
-if (!stripeSecret) {
+let stripe = null;
+if (stripeSecret) {
+  stripe = new Stripe(stripeSecret, { apiVersion: '2023-10-16' });
+} else {
   console.error('STRIPE_SECRET_KEY not configured');
 }
-const stripe = new Stripe(stripeSecret || '', { apiVersion: '2023-10-16' });
 
-const router = express.Router();
+router.post('/', async (req, res) => {
+  if (!stripe) {
+    return res.status(500).json({ error: 'Stripe not configured' });
+  }
 
-router.post('/checkout', async (req, res) => {
   const { id } = req.body;
   console.log('[checkout] requested', id);
 
@@ -49,4 +55,4 @@ router.post('/checkout', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
