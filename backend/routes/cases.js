@@ -23,9 +23,14 @@ const ABS = (url) => {
   return `${base}${clean.startsWith('/') ? '' : '/'}${clean}`;
 };
 
-router.get('/', async (_req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query(`
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const pageSize = Math.max(parseInt(req.query.pageSize, 10) || 10, 1);
+    const offset = (page - 1) * pageSize;
+
+    const [rows] = await pool.query(
+      `
       SELECT
         id,
         titulo AS title,
@@ -41,7 +46,13 @@ router.get('/', async (_req, res) => {
         data_publicacao AS created_at
       FROM cases
       ORDER BY data_publicacao DESC
-    `);
+      LIMIT ? OFFSET ?
+    `,
+      [pageSize, offset]
+    );
+
+    const [countRows] = await pool.query('SELECT COUNT(*) AS total FROM cases');
+    const total = countRows[0]?.total || 0;
 
     const data = (rows || []).map((r) => ({
       ...r,
@@ -52,7 +63,14 @@ router.get('/', async (_req, res) => {
       coverImage: ABS(r.coverImage),
     }));
 
-    res.json(data);
+    res.json({
+      data,
+      pagination: {
+        page,
+        pageSize,
+        total,
+      },
+    });
   } catch (err) {
     console.error('GET /api/cases ->', err);
     res.status(500).json({ error: 'Erro ao carregar cases' });
