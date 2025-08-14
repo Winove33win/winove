@@ -1,116 +1,84 @@
 import express from 'express';
-import pool from '../db.js';
+import mysql from 'mysql2/promise';
 
 const router = express.Router();
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  port: Number(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 5,
+});
 
-// Função auxiliar para converter JSON string em objeto/array JavaScript
-const parseJSONField = (value) => {
-  if (!value) return null;
-  if (typeof value === 'string') {
-    try {
-      return JSON.parse(value);
-    } catch (err) {
-      console.error('Erro ao fazer parse do JSON:', err);
-      return null;
-    }
-  }
-  // Se já for um objeto/array (tipo JSON do MySQL), retorna como está
-  return value;
+const ORIGIN = 'https://winove.com.br';
+
+const normalizeUrl = (v) => {
+  if (!v) return '';
+  if (v.startsWith('/assets/')) return `${ORIGIN}${v}`;
+  if (v.startsWith('www.')) return `https://${v}`;
+  if (/^https?:\/\//i.test(v)) return v;
+  return v; // deixe como está para URLs externas válidas
 };
 
-// Normaliza o campo metrics para sempre retornar um array de objetos
-const parseMetricsField = (value) => {
-  const parsed = parseJSONField(value);
-  if (Array.isArray(parsed)) return parsed;
-  if (parsed && typeof parsed === 'object') {
-    return Object.entries(parsed).map(([label, val]) => {
-      if (val && typeof val === 'object') {
-        return {
-          label,
-          value: String(val.value ?? ''),
-          description: val.description ?? ''
-        };
-      }
-      return { label, value: String(val) };
-    });
-  }
-  return [];
-};
-
-// Lista todos os cases
-router.get('/', async (_req, res) => {
+const toArray = (val) => {
   try {
-    // Seleciona apenas colunas existentes na tabela `cases`.
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    const parsed = JSON.parse(val);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+router.get('/cases', async (_req, res) => {
+  try {
     const [rows] = await pool.query(`
       SELECT
         id,
         title,
         slug,
         excerpt,
-        coverImage,
+        coverimage     AS coverImage,
+        tags,
+        metrics,
+        gallery,
         content,
         client,
         category,
-        created_at,
-        tags,
-        metrics,
-        gallery
+        created_at
       FROM cases
       ORDER BY created_at DESC, id DESC
     `);
-    // Converte campos JSON (tags, gallery, metrics) para arrays/objetos
-    const data = rows.map(row => {
-      const tags = parseJSONField(row.tags) ?? [];
-      const gallery = parseJSONField(row.gallery) ?? [];
-      const metrics = parseMetricsField(row.metrics);
-      return { ...row, tags, gallery, metrics };
-    });
-    res.json(data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'DB error' });
-  }
-});
 
-// Detalhe de um case por slug
-router.get('/:slug', async (req, res) => {
-  try {
-    const [rows] = await pool.query(
-      `
-      SELECT
-        id,
-        title,
-        slug,
-        excerpt,
-        coverImage,
-        content,
-        client,
-        category,
-        created_at,
-        tags,
-        metrics,
-        gallery
-      FROM cases
-      WHERE slug = ?
-      LIMIT 1
-      `,
-      [req.params.slug]
-    );
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'not_found' });
-    }
-    const row = rows[0];
-    // Converte campos JSON do registro encontrado
-    const data = {
-      ...row,
-      tags: parseJSONField(row.tags) ?? [],
-      gallery: parseJSONField(row.gallery) ?? [],
-      metrics: parseMetricsField(row.metrics)
-    };
-    res.json(data);
+    const payload = rows.map((r) => {
+      const coverImage = normalizeUrl(r.coverImage);
+      const gallery = toArray(r.gallery).map(normalizeUrl);
+
+      return {
+        id: r.id,
+        title: r.title || '',
+        slug: r.slug || '',
+        excerpt: r.excerpt || '',
+        coverImage,        // usado na página de detalhe
+        image: coverImage, // compat: se a listagem usa "image"
+        tags: toArray(r.tags),
+        metrics: toArray(r.metrics),
+        gallery,
+        content: r.content || '',
+        client: r.client || '',
+        category: r.category || '',
+        // forneça data em ISO; o frontend formata para “pt-BR”
+        published_at: r.created_at ? new Date(r.created_at).toISOString() : null,
+      };
+    });
+
+    res.json(payload);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'DB error' });
+    console.error('GET /api/cases error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
