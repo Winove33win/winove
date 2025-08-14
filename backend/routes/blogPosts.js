@@ -3,10 +3,15 @@ import { pool } from '../db.js';
 
 const router = Router();
 
-// Lista posts
-router.get('/', async (_req, res) => {
+// Lista posts com paginação
+router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.query(`
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const pageSize = Math.max(parseInt(req.query.pageSize, 10) || 10, 1);
+    const offset = (page - 1) * pageSize;
+
+    const [rows] = await pool.query(
+      `
       SELECT
         id,
         titulo AS title,
@@ -18,9 +23,22 @@ router.get('/', async (_req, res) => {
         autor AS author
       FROM blog_posts
       ORDER BY data_publicacao DESC
-    `);
+      LIMIT ? OFFSET ?
+    `,
+      [pageSize, offset]
+    );
 
-    res.json(rows || []);
+    const [countRows] = await pool.query('SELECT COUNT(*) AS total FROM blog_posts');
+    const total = countRows[0]?.total || 0;
+
+    res.json({
+      data: rows || [],
+      pagination: {
+        page,
+        pageSize,
+        total,
+      },
+    });
   } catch (err) {
     console.error('GET /api/blog-posts ->', err);
     res.status(500).json({ error: 'Erro ao carregar posts' });
