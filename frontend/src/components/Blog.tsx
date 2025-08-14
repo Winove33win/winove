@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 
 interface Post {
   id: number;
-  titulo: string;
+  title: string;
   slug: string;
-  resumo: string;
-  conteudo: string;
-  imagem_destacada: string;
-  data_publicacao: string;
-  autor: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  date: string;
+  author: string;
 }
 
 function readingTime(content: string): string {
@@ -84,8 +84,8 @@ export const Blog = () => {
                   {/* Article Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={article.imagem_destacada}
-                      alt={article.titulo}
+                      src={article.coverImage}
+                      alt={article.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
@@ -93,7 +93,7 @@ export const Blog = () => {
                     {/* Read Time */}
                     <div className="absolute top-4 right-4">
                       <span className="px-3 py-1 text-xs font-medium rounded-full glass text-muted-foreground border border-border/20">
-                        {readingTime(article.conteudo)}
+                        {readingTime(article.content)}
                       </span>
                     </div>
                   </div>
@@ -101,22 +101,22 @@ export const Blog = () => {
                   {/* Article Content */}
                   <div className="p-6">
                     <h3 className="text-xl font-bold mb-3 text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300">
-                      {article.titulo}
+                      {article.title}
                     </h3>
 
                     <p className="text-muted-foreground mb-4 text-sm line-clamp-3">
-                      {article.resumo}
+                      {article.excerpt}
                     </p>
 
                     {/* Article Meta */}
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4" />
-                        <span>{article.autor}</span>
+                        <span>{article.author}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
-                        <span>{new Date(article.data_publicacao).toLocaleDateString('pt-BR')}</span>
+                        <span>{new Date(article.date).toLocaleDateString('pt-BR')}</span>
                       </div>
                     </div>
 

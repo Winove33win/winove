@@ -6,13 +6,13 @@ import { Footer } from "@/components/Footer";
 
 interface BlogPost {
   id: number;
-  titulo: string;
+  title: string;
   slug: string;
-  resumo: string;
-  conteudo: string;
-  imagem_destacada: string;
-  data_publicacao: string;
-  autor: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  date: string;
+  author: string;
 }
 
 function calcReadingTime(content: string): string {
@@ -91,8 +91,8 @@ export const BlogList = () => {
                   {/* Post Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={post.imagem_destacada}
-                      alt={post.titulo}
+                      src={post.coverImage}
+                      alt={post.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
@@ -100,7 +100,7 @@ export const BlogList = () => {
                     {/* Read Time */}
                     <div className="absolute top-4 right-4">
                       <span className="px-3 py-1 text-xs font-medium rounded-full glass text-muted-foreground border border-border/20">
-                        {`${calcReadingTime(post.conteudo)} min`}
+                        {`${calcReadingTime(post.content)} min`}
                       </span>
                     </div>
                   </div>
@@ -108,22 +108,22 @@ export const BlogList = () => {
                   {/* Post Content */}
                   <div className="p-6">
                     <h3 className="text-xl font-bold mb-3 text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300">
-                      {post.titulo}
+                      {post.title}
                     </h3>
 
                     <p className="text-muted-foreground mb-4 text-sm line-clamp-3">
-                      {post.resumo}
+                      {post.excerpt}
                     </p>
 
                     {/* Post Meta */}
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4" />
-                        <span>{post.autor}</span>
+                        <span>{post.author}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
-                        <span>{new Date(post.data_publicacao).toLocaleDateString('pt-BR')}</span>
+                        <span>{new Date(post.date).toLocaleDateString('pt-BR')}</span>
                       </div>
                     </div>
 
