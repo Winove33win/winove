@@ -1,5 +1,5 @@
-const express = require('express');
-const Stripe = require('stripe');
+import { Router } from 'express';
+import Stripe from 'stripe';
 
 const stripeSecret = process.env.STRIPE_SECRET_KEY;
 if (!stripeSecret) {
@@ -7,7 +7,7 @@ if (!stripeSecret) {
 }
 const stripe = new Stripe(stripeSecret || '', { apiVersion: '2023-10-16' });
 
-const router = express.Router();
+const router = Router();
 
 router.post('/checkout', async (req, res) => {
   const { id } = req.body;
@@ -49,4 +49,5 @@ router.post('/checkout', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
+
