@@ -107,7 +107,7 @@ export const Portfolio = () => {
                   {/* Project Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={project.image}
+                      src={`https://images.unsplash.com/${project.image}?w=600&h=400&fit=crop`}
                       alt={project.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
