@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import { pool } from '../db.js';
+import express from 'express';
+import pool from '../db.js';
 
-const router = Router();
+const router = express.Router();
 
-// Lista posts
+// Lista todos os posts do blog
 router.get('/', async (_req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -13,21 +13,20 @@ router.get('/', async (_req, res) => {
         slug,
         resumo AS excerpt,
         conteudo AS content,
-        imagem_destacada AS cover_image,
+        imagem_destacada AS coverImage,
         data_publicacao AS date,
         autor AS author
       FROM blog_posts
-      ORDER BY data_publicacao DESC
+      ORDER BY data_publicacao DESC, id DESC
     `);
-
-    res.json(rows || []);
+    res.json(rows);
   } catch (err) {
-    console.error('GET /api/blog-posts ->', err);
-    res.status(500).json({ error: 'Erro ao carregar posts' });
+    console.error(err);
+    res.status(500).json({ error: 'DB error' });
   }
 });
 
-// 1 post por slug
+// Detalhe do post por slug
 router.get('/:slug', async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -38,7 +37,7 @@ router.get('/:slug', async (req, res) => {
         slug,
         resumo AS excerpt,
         conteudo AS content,
-        imagem_destacada AS cover_image,
+        imagem_destacada AS coverImage,
         data_publicacao AS date,
         autor AS author
       FROM blog_posts
@@ -47,12 +46,13 @@ router.get('/:slug', async (req, res) => {
     `,
       [req.params.slug]
     );
-
-    if (!rows?.length) return res.status(404).json({ error: 'Post não encontrado' });
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'not_found' });
+    }
     res.json(rows[0]);
   } catch (err) {
-    console.error('GET /api/blog-posts/:slug ->', err);
-    res.status(500).json({ error: 'Erro ao carregar post' });
+    console.error(err);
+    res.status(500).json({ error: 'DB error' });
   }
 });
 
