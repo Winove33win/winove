@@ -33,19 +33,19 @@ router.get('/', async (req, res) => {
       `
       SELECT
         id,
-        titulo AS title,
+        title,
         slug,
-        resumo AS excerpt,
-        cover_image AS coverImage,
+        excerpt,
+        coverImage,
         tags,
         metrics,
-        galeria AS gallery,
-        conteudo AS content,
-        cliente AS client,
-        categoria AS category,
-        data_publicacao AS created_at
+        gallery,
+        content,
+        client,
+        category,
+        created_at
       FROM cases
-      ORDER BY data_publicacao DESC
+      ORDER BY created_at DESC
       LIMIT ? OFFSET ?
     `,
       [pageSize, offset]
@@ -74,17 +74,17 @@ router.get('/:slug', async (req, res) => {
       `
       SELECT
         id,
-        titulo AS title,
+        title,
         slug,
-        resumo AS excerpt,
-        cover_image AS coverImage,
+        excerpt,
+        coverImage,
         tags,
         metrics,
-        galeria AS gallery,
-        conteudo AS content,
-        cliente AS client,
-        categoria AS category,
-        data_publicacao AS created_at
+        gallery,
+        content,
+        client,
+        category,
+        created_at
       FROM cases
       WHERE slug = ?
       LIMIT 1
