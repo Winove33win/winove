@@ -23,17 +23,6 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/blog-posts', blogPostsRoute);
 app.use('/api/cases',      casesRoute);
 
-// monta rota de checkout apenas se a chave STRIPE_SECRET_KEY estiver definida
-if (process.env.STRIPE_SECRET_KEY) {
-  import('./routes/checkout.js')
-    .then(({ default: checkoutRoute }) => {
-      app.use('/api/checkout', checkoutRoute);
-    })
-    .catch((err) => {
-      console.error('Erro ao carregar checkout:', err);
-    });
-}
-
 // (opcional) rota 404 de API
 app.use('/api', (_req, res) => res.status(404).json({ error: 'not_found' }));
 

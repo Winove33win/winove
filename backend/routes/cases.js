@@ -51,9 +51,6 @@ router.get('/', async (req, res) => {
       [pageSize, offset]
     );
 
-    const [countRows] = await pool.query('SELECT COUNT(*) AS total FROM cases');
-    const total = countRows[0]?.total || 0;
-
     const data = (rows || []).map((r) => ({
       ...r,
       // normalização defensiva
@@ -63,14 +60,8 @@ router.get('/', async (req, res) => {
       coverImage: ABS(r.coverImage),
     }));
 
-    res.json({
-      data,
-      pagination: {
-        page,
-        pageSize,
-        total,
-      },
-    });
+    // Front-end espera um array simples de cases
+    res.json(data);
   } catch (err) {
     console.error('GET /api/cases ->', err);
     res.status(500).json({ error: 'Erro ao carregar cases' });

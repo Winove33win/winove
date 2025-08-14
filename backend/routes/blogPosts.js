@@ -26,19 +26,10 @@ router.get('/', async (req, res) => {
       LIMIT ? OFFSET ?
     `,
       [pageSize, offset]
-    );
+      );
 
-    const [countRows] = await pool.query('SELECT COUNT(*) AS total FROM blog_posts');
-    const total = countRows[0]?.total || 0;
-
-    res.json({
-      data: rows || [],
-      pagination: {
-        page,
-        pageSize,
-        total,
-      },
-    });
+    // Front-end espera um array simples de posts
+    res.json(rows || []);
   } catch (err) {
     console.error('GET /api/blog-posts ->', err);
     res.status(500).json({ error: 'Erro ao carregar posts' });
