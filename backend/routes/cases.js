@@ -1,84 +1,83 @@
-import express from 'express';
-import mysql from 'mysql2/promise';
+import { Router } from 'express';
+import { pool } from '../db.js';
 
-const router = express.Router();
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 5,
-});
+const router = Router();
 
-const ORIGIN = 'https://winove.com.br';
-
-const normalizeUrl = (v) => {
-  if (!v) return '';
-  if (v.startsWith('/assets/')) return `${ORIGIN}${v}`;
-  if (v.startsWith('www.')) return `https://${v}`;
-  if (/^https?:\/\//i.test(v)) return v;
-  return v; // deixe como está para URLs externas válidas
-};
-
-const toArray = (val) => {
+const toArray = (value) => {
+  if (!value) return [];
   try {
-    if (!val) return [];
-    if (Array.isArray(val)) return val;
-    const parsed = JSON.parse(val);
-    return Array.isArray(parsed) ? parsed : [];
+    const v = typeof value === 'string' ? JSON.parse(value) : value;
+    return Array.isArray(v) ? v : [];
   } catch {
     return [];
   }
 };
 
-router.get('/cases', async (_req, res) => {
+// Garante URL absoluta para imagens locais do /assets
+const ABS = (url) => {
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  const base = process.env.PUBLIC_BASE_URL || 'https://winove.com.br';
+  // força /assets/... mesmo se vier "assets/..."
+  const clean = url.startsWith('/assets') ? url : url.replace(/^assets\//, '/assets/');
+  return `${base}${clean.startsWith('/') ? '' : '/'}${clean}`;
+};
+
+router.get('/', async (_req, res) => {
   try {
     const [rows] = await pool.query(`
       SELECT
-        id,
-        title,
-        slug,
-        excerpt,
-        coverimage     AS coverImage,
-        tags,
-        metrics,
-        gallery,
-        content,
-        client,
-        category,
-        created_at
+        id, title, slug, excerpt, coverImage, tags, metrics, gallery,
+        content, client, category, created_at
       FROM cases
-      ORDER BY created_at DESC, id DESC
+      ORDER BY created_at DESC
     `);
 
-    const payload = rows.map((r) => {
-      const coverImage = normalizeUrl(r.coverImage);
-      const gallery = toArray(r.gallery).map(normalizeUrl);
+    const data = (rows || []).map((r) => ({
+      ...r,
+      // normalização defensiva
+      tags: toArray(r.tags),
+      metrics: toArray(r.metrics),
+      gallery: toArray(r.gallery).map(ABS),
+      coverImage: ABS(r.coverImage),
+    }));
 
-      return {
-        id: r.id,
-        title: r.title || '',
-        slug: r.slug || '',
-        excerpt: r.excerpt || '',
-        coverImage,        // usado na página de detalhe
-        image: coverImage, // compat: se a listagem usa "image"
-        tags: toArray(r.tags),
-        metrics: toArray(r.metrics),
-        gallery,
-        content: r.content || '',
-        client: r.client || '',
-        category: r.category || '',
-        // forneça data em ISO; o frontend formata para “pt-BR”
-        published_at: r.created_at ? new Date(r.created_at).toISOString() : null,
-      };
-    });
+    res.json(data);
+  } catch (err) {
+    console.error('GET /api/cases ->', err);
+    res.status(500).json({ error: 'Erro ao carregar cases' });
+  }
+});
+
+router.get('/:slug', async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `
+      SELECT
+        id, title, slug, excerpt, coverImage, tags, metrics, gallery,
+        content, client, category, created_at
+      FROM cases
+      WHERE slug = ?
+      LIMIT 1
+    `,
+      [req.params.slug]
+    );
+
+    if (!rows?.length) return res.status(404).json({ error: 'Case não encontrado' });
+
+    const r = rows[0];
+    const payload = {
+      ...r,
+      tags: toArray(r.tags),
+      metrics: toArray(r.metrics),
+      gallery: toArray(r.gallery).map(ABS),
+      coverImage: ABS(r.coverImage),
+    };
 
     res.json(payload);
   } catch (err) {
-    console.error('GET /api/cases error:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('GET /api/cases/:slug ->', err);
+    res.status(500).json({ error: 'Erro ao carregar case' });
   }
 });
 
