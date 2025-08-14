@@ -152,7 +152,7 @@ export const CaseDetail = () => {
               {/* Featured Image */}
               <div className="relative h-64 md:h-96 overflow-hidden rounded-2xl">
                 <img
-                  src={`https://images.unsplash.com/${caseItem.coverImage}?w=800&h=600&fit=crop`}
+                  src={caseItem.coverImage}
                   alt={caseItem.title}
                   className="w-full h-full object-cover"
                 />
@@ -267,7 +267,7 @@ export const CaseDetail = () => {
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     <img
-                      src={`https://images.unsplash.com/${image}?w=600&h=400&fit=crop`}
+                      src={image}
                       alt={`${caseItem.title} - Imagem ${index + 1}`}
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                     />
@@ -296,7 +296,7 @@ export const CaseDetail = () => {
                   <article key={relatedCase.slug} className="glass rounded-2xl overflow-hidden hover-lift group">
                     <div className="relative h-48 overflow-hidden">
                       <img
-                        src={`https://images.unsplash.com/${relatedCase.coverImage}?w=400&h=300&fit=crop`}
+                        src={relatedCase.coverImage}
                         alt={relatedCase.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />

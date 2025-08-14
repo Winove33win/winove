@@ -108,7 +108,7 @@ export const CasesList = () => {
                   {/* Case Image */}
                   <div className="relative h-64 overflow-hidden">
                     <img
-                      src={`https://images.unsplash.com/${caseItem.coverImage}?w=800&h=400&fit=crop`}
+                      src={caseItem.coverImage}
                       alt={caseItem.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
