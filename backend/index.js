@@ -5,8 +5,8 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 
-import blogPostsRoute from './routes/blogPosts.js';  // GET /api/blog-posts, /api/blog-posts/:slug
-import casesRoute from './routes/cases.js';          // GET /api/cases,      /api/cases/:slug
+import blogPostsRouter from './routes/blogPosts.js';  // GET /api/blog-posts, /api/blog-posts/:slug
+import casesRouter from './routes/cases.js';          // GET /api/cases,      /api/cases/:slug
 
 const app = express();
 
@@ -20,8 +20,8 @@ app.get('/api/health', (_req, res) => {
 });
 
 // ROTAS DA API (cada uma no seu prefixo)
-app.use('/api/blog-posts', blogPostsRoute);
-app.use('/api/cases',      casesRoute);
+app.use('/api/blog-posts', blogPostsRouter);
+app.use('/api/cases',      casesRouter);
 
 // (opcional) rota 404 de API
 app.use('/api', (_req, res) => res.status(404).json({ error: 'not_found' }));

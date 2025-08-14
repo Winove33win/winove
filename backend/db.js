@@ -1,11 +1,12 @@
 import mysql from 'mysql2/promise';
 
 export const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: 'lweb03.appuni.com.br',
+  port: 3306,
+  user: 'winove',
+  password: '9*19avmU0',
+  database: 'fernando_winove_com_br_',
   waitForConnections: true,
-  connectionLimit: Number(process.env.DB_CONN_LIMIT || 5),
+  connectionLimit: 10,
+  queueLimit: 0,
 });
