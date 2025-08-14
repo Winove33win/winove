@@ -27,10 +27,20 @@ router.get('/', async (_req, res) => {
   try {
     const [rows] = await pool.query(`
       SELECT
-        id, title, slug, excerpt, coverImage, tags, metrics, gallery,
-        content, client, category, created_at
+        id,
+        titulo AS title,
+        slug,
+        resumo AS excerpt,
+        cover_image AS coverImage,
+        tags,
+        metrics,
+        galeria AS gallery,
+        conteudo AS content,
+        cliente AS client,
+        categoria AS category,
+        data_publicacao AS created_at
       FROM cases
-      ORDER BY created_at DESC
+      ORDER BY data_publicacao DESC
     `);
 
     const data = (rows || []).map((r) => ({
@@ -54,8 +64,18 @@ router.get('/:slug', async (req, res) => {
     const [rows] = await pool.query(
       `
       SELECT
-        id, title, slug, excerpt, coverImage, tags, metrics, gallery,
-        content, client, category, created_at
+        id,
+        titulo AS title,
+        slug,
+        resumo AS excerpt,
+        cover_image AS coverImage,
+        tags,
+        metrics,
+        galeria AS gallery,
+        conteudo AS content,
+        cliente AS client,
+        categoria AS category,
+        data_publicacao AS created_at
       FROM cases
       WHERE slug = ?
       LIMIT 1

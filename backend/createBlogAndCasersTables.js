@@ -10,7 +10,7 @@ async function setupDatabase() {
   });
 
   const createPostsTable = `
-    CREATE TABLE IF NOT EXISTS posts (
+    CREATE TABLE IF NOT EXISTS blog_posts (
       id INT AUTO_INCREMENT PRIMARY KEY,
       titulo VARCHAR(255) NOT NULL,
       slug VARCHAR(255) UNIQUE NOT NULL,
@@ -31,18 +31,17 @@ async function setupDatabase() {
       coverImage TEXT,
       tags JSON,
       metrics JSON,
+      gallery JSON,
+      content LONGTEXT,
       client VARCHAR(255),
-      date DATETIME DEFAULT CURRENT_TIMESTAMP,
-      challenge TEXT,
-      solution TEXT,
-      results TEXT,
-      gallery JSON
+      category VARCHAR(255),
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `;
 
   try {
     await connection.execute(createPostsTable);
-    console.log("✅ Tabela 'posts' criada com sucesso.");
+    console.log("✅ Tabela 'blog_posts' criada com sucesso.");
 
     await connection.execute(createCasesTable);
     console.log("✅ Tabela 'cases' criada com sucesso.");
